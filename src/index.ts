@@ -100,7 +100,10 @@ app.post("/api/users/upload", async (req, res) => {
             JSON.stringify({
                 "file_name": fileName,
                 "uploader": req.body.username,
-                "delete_token": deleteToken
+                "delete_token": deleteToken,
+                "host": req.headers.host,
+                "protocol": req.protocol,
+                "path": "/uploads/" + fileName
             })
         )
     });
