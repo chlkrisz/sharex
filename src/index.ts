@@ -121,7 +121,7 @@ app.get("/uploads/:img", async (req, res) => {
         return res.status(403).end();
     } else {
         const author = await getFileAuthor(req.params.img);
-        console.log(req.headers["user-agent"]);
+        //console.log(req.headers["user-agent"]);
         if(req.headers["user-agent"] && req.headers["user-agent"] === "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)") {
             return res.send(`
             <!doctype html>
@@ -137,6 +137,23 @@ app.get("/uploads/:img", async (req, res) => {
             `)
         }
 
+        res.setHeader("Content-Type", mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]))
+        const imagePath = path.join(__dirname, '/../uploads/', req.params.img);
+        const imageStream = fs.createReadStream(imagePath);
+
+        imageStream.on('error', (err) => {
+            //console.error('Error reading file:', err);
+            res.status(404).end();
+        });
+
+        imageStream.pipe(res);
+    }
+})
+
+app.get("/uploads/og/:img", async (req, res) => {
+    if(!/.(jpg|jpeg|png|gif|bmp|svg)$/.test(req.params.img)) {
+        return res.status(403).end();
+    } else {
         res.setHeader("Content-Type", mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]))
         const imagePath = path.join(__dirname, '/../uploads/', req.params.img);
         const imageStream = fs.createReadStream(imagePath);
