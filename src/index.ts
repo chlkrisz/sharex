@@ -120,9 +120,10 @@ app.get("/uploads/:img", async (req, res) => {
     if(!/.(jpg|jpeg|png|gif|bmp|svg)$/.test(req.params.img)) {
         return res.status(403).end();
     } else {
-        const author = getFileAuthor(req.params.img);
-        if(req.headers["user-agent"] && req.headers["user-agent"].includes("Discordbot")) {
-            res.send(`
+        const author = await getFileAuthor(req.params.img);
+        console.log(req.headers["user-agent"]);
+        if(req.headers["user-agent"] && req.headers["user-agent"] === "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)") {
+            return res.send(`
             <!doctype html>
             <html>
                 <head>
