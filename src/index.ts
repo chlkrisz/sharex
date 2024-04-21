@@ -60,11 +60,10 @@ app.get("/api/oembed", async (req, res) => {
     return res.json({
         type: "rich",
         version: "1.0",
-        provider_name: "liba sharex",
+        provider_name: req.query.author,
         provider_url: "https://" + req.headers.host,
         url: "https://" + req.headers.host + "/uploads/" + req.query.file,
-        author: req.query.author,
-        thumbnail_url: "https://" + req.headers.host + "/uploads/" + req.query.file
+        thumbnail_url: "https://" + req.headers.host + "/uploads/og/" + req.query.file
     })
 })
 
@@ -129,7 +128,7 @@ app.get("/uploads/:img", async (req, res) => {
                 <head>
                     <meta property="og:author" content="${author}">
                     <meta name="theme-color" content="#050505">
-                    <meta property="og:image" content="https://${req.headers.host}/uploads/${req.params.img}">
+                    <meta property="og:image" content="https://${req.headers.host}/uploads/og/${req.params.img}">
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${author}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
                 </head>
