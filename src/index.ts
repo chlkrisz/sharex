@@ -62,6 +62,7 @@ app.get("/api/oembed", async (req, res) => {
         version: "1.0",
         provider_name: req.query.author,
         provider_url: "https://" + req.headers.host,
+        author: req.query.author,
         url: "https://" + req.headers.host + "/uploads/" + req.query.file,
         thumbnail_url: "https://" + req.headers.host + "/uploads/og/" + req.query.file
     })
