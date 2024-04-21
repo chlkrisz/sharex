@@ -128,7 +128,7 @@ app.get("/uploads/:img", async (req, res) => {
             <html>
                 <head>
                     <meta property="og:author" content="${author}">
-                    <meta property="og:title" content="A KURVA ANYÁD">
+                    <meta property="og:title" content="‎‎‎‎‎‎‎‎">
                     <meta name="theme-color" content="#050505">
                     <meta property="og:image" content="https://${req.headers.host}/uploads/og/${req.params.img}">
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${author}&file=${req.params.img}" />
