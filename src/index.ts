@@ -144,6 +144,7 @@ app.get("/:img", async (req, res) => {
                     <meta name="twitter:card" content="summary_large_image">
 
                     <meta property="og:video" content="https://${req.headers.host}/uploads/${req.params.img}">
+                    <meta property="og:video:url" content="https://${req.headers.host}/uploads/${req.params.img}">
                     <meta property="og:video:type" content="video/mp4" />
                 </head>
             </html>
