@@ -155,3 +155,24 @@ export async function setDisplayName(username: string, displayName: string): Pro
         return false;
     })
 }
+
+export async function setPassword(username: string, newPassword: string): Promise<boolean> {
+    return mongoose.connect(mongoUrl).then(async()=>{
+        const Users = mongoose.model("users", userSchema);
+        const user = await Users.findOne({ 'username': username });
+        if (!user) {
+            await mongoose.connection.close();
+            return false;
+        }
+
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hash = bcrypt.hashSync(newPassword, salt);
+        
+        user.password = hash;
+        await user.save();
+        await mongoose.connection.close();
+        return true;
+    }).catch(err=>{
+        return false;
+    })
+}

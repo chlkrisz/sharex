@@ -1,4 +1,4 @@
-import { addUser, validateLogin, addUpload, countUploads, getFileAuthor, findDeletionToken, deleteUpload, setDisplayName } from "./mongo";
+import { addUser, validateLogin, addUpload, countUploads, getFileAuthor, findDeletionToken, deleteUpload, setDisplayName, setPassword } from "./mongo";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -123,6 +123,14 @@ app.post("/api/users/changeDisplayName", async (req, res) => {
     const authorization = req.headers.authorization;
     if(authorization!== "Bearer "+process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
     const changed: boolean = await setDisplayName(username, displayName);
+    await res.status(changed === true ? 200 : 500).end(changed.toString());
+})
+
+app.post("/api/users/changePassword", async (req, res) => {
+    const {username, newPassword} = req.body;
+    const authorization = req.headers.authorization;
+    if(authorization!== "Bearer "+process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
+    const changed: boolean = await setPassword(username, newPassword);
     await res.status(changed === true ? 200 : 500).end(changed.toString());
 })
 
