@@ -103,7 +103,8 @@ app.post("/api/users/upload", async (req, res) => {
                 "delete_token": deleteToken,
                 "host": req.headers.host,
                 "protocol": req.protocol,
-                "path": "/" + fileName
+                "path": "/" + fileName,
+                "raw_file_path": "/uploads/raw/" + fileName
             })
         )
     });
