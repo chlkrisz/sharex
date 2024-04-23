@@ -26,11 +26,19 @@ p {
     text-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }
 
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 1rem;
+    gap:1rem;
+}
+
 a {
     font-size: 1rem;
     text-shadow: 0 0 10px rgba(0, 0, 0, 1);
     text-decoration: none;
-    margin:1rem;
     padding:1rem;
     background-color: #fff4;
     border-radius:1rem;
