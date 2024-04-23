@@ -168,9 +168,14 @@ app.get("/uploads/og/:img", async (req, res) => {
     if(!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
         return res.status(403).end();
     } else {
-        res.setHeader("Content-Type", mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]))
+        
         const imagePath = path.join(__dirname, '/../uploads/', req.params.img);
         const imageStream = fs.createReadStream(imagePath);
+
+        res.set({
+            'Content-Type': mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]),
+            'Content-Length': fs.statSync(imagePath).size.toString(),
+        });
 
         imageStream.on('error', (err) => {
             //console.error('Error reading file:', err);
