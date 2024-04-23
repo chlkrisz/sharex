@@ -162,7 +162,7 @@ app.get("/:img", async (req, res) => {
 })
 
 app.get("/uploads/og/:img", async (req, res) => {
-    if(!/.(jpg|jpeg|png|gif|bmp|svg)$/.test(req.params.img)) {
+    if(!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
         return res.status(403).end();
     } else {
         res.setHeader("Content-Type", mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]))
