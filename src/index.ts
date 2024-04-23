@@ -122,6 +122,7 @@ app.post("/api/users/changeDisplayName", async (req, res) => {
     const {username, displayName} = req.body;
     const authorization = req.headers.authorization;
     if(authorization!== "Bearer "+process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
+    if(displayName.length > 257) return res.status(400).end("Display name is too long!");
     const changed: boolean = await setDisplayName(username, displayName);
     await res.status(changed === true ? 200 : 500).end(changed.toString());
 })
