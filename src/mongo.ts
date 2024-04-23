@@ -87,14 +87,17 @@ export async function countUploads(): Promise<number> {
 export async function getFileAuthor(filename: string): Promise<string> {
     return mongoose.connect(mongoUrl).then(async()=>{
         const Uploads = mongoose.model("uploads", uploadSchema);
+        const Users = mongoose.model("users", userSchema);
         const upload = await Uploads.findOne({ 'filename': filename });
+        if (!upload || !upload.username) return "unknown";
+        const user = await Users.findOne({ 'username': upload.username });
         await mongoose.connection.close();
 
-        if (upload && upload.username) return upload.username;
-        return "";
+        if (user && user.displayName) return user.displayName;
+        return "unknown";
     }).catch(err => {
         console.error("Error getting file author:", err);
-        return "";
+        return "unknown";
     })
 }
 
@@ -133,4 +136,22 @@ export async function deleteUpload(filename: string): Promise<boolean> {
         return false;
     })
 
+}
+
+export async function setDisplayName(username: string, displayName: string): Promise<boolean> {
+    return mongoose.connect(mongoUrl).then(async()=>{
+        const Users = mongoose.model("users", userSchema);
+        const user = await Users.findOne({ 'username': username });
+        if (!user) {
+            await mongoose.connection.close();
+            return false;
+        }
+
+        user.displayName = displayName;
+        await user.save();
+        await mongoose.connection.close();
+        return true;
+    }).catch(err=>{
+        return false;
+    })
 }

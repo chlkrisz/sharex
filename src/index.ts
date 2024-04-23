@@ -1,4 +1,4 @@
-import { addUser, validateLogin, addUpload, countUploads, getFileAuthor, findDeletionToken, deleteUpload } from "./mongo";
+import { addUser, validateLogin, addUpload, countUploads, getFileAuthor, findDeletionToken, deleteUpload, setDisplayName } from "./mongo";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -115,7 +115,15 @@ app.post("/api/users/create", async (req, res) => {
     const authorization = req.headers.authorization;
     if(authorization!== "Bearer "+process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
     const created: boolean = await addUser(username, password) || false;
-    await res.status(created === true? 200 : 500).end(created.toString());
+    await res.status(created === true ? 200 : 500).end(created.toString());
+})
+
+app.post("/api/users/changeDisplayName", async (req, res) => {
+    const {username, displayName} = req.body;
+    const authorization = req.headers.authorization;
+    if(authorization!== "Bearer "+process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
+    const changed: boolean = await setDisplayName(username, displayName);
+    await res.status(changed === true ? 200 : 500).end(changed.toString());
 })
 
 app.get("/uploads", async(_,res)=>{res.redirect("https://www.youtube.com/watch?v=WsBv8--PX3o")})
