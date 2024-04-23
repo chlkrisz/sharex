@@ -103,7 +103,7 @@ app.post("/api/users/upload", async (req, res) => {
                 "delete_token": deleteToken,
                 "host": req.headers.host,
                 "protocol": req.protocol,
-                "path": "/uploads/" + fileName
+                "path": "/" + fileName
             })
         )
     });
@@ -118,10 +118,16 @@ app.post("/api/users/create", async (req, res) => {
 })
 
 app.get("/uploads", async(_,res)=>{res.redirect("https://www.youtube.com/watch?v=WsBv8--PX3o")})
+app.get("/uploads/og", async(_,res)=>{res.redirect("https://www.youtube.com/watch?v=WsBv8--PX3o")})
 
-app.get("/uploads/:img", async (req, res) => {
-    if(!/.(jpg|jpeg|png|gif|bmp|svg)$/.test(req.params.img)) {
-        return res.status(403).end();
+// Legacy stuff
+app.get("/uploads/:img",async(req,res)=>{
+    res.redirect('../'+req.params.img)
+})
+
+app.get("/:img", async (req, res) => {
+    if(!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
+        return;
     } else {
         const author = await getFileAuthor(req.params.img);
         //console.log(req.headers["user-agent"]);
