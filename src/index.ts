@@ -139,12 +139,12 @@ app.get("/:img", async (req, res) => {
                     <meta property="og:author" content="${author}">
                     <meta property="og:title" content="‎‎‎‎‎‎‎‎">
                     <meta name="theme-color" content="#050505">
-                    <meta property="og:image" content="https://${req.headers.host}/uploads/og/${req.params.img}">
+                    <meta property="og:image" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${author}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
 
-                    <meta property="og:video" content="https://${req.headers.host}/uploads/${req.params.img}">
-                    <meta property="og:video:url" content="https://${req.headers.host}/uploads/${req.params.img}">
+                    <meta property="og:video" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
+                    <meta property="og:video:url" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
                     <meta property="og:video:type" content="video/mp4" />
                 </head>
             </html>
@@ -164,7 +164,10 @@ app.get("/:img", async (req, res) => {
     }
 })
 
-app.get("/uploads/og/:img", async (req, res) => {
+// Legacy
+app.get("/uploads/og/:img",(req,res)=>{res.redirect("../raw/"+req.params.img)})
+
+app.get("/uploads/raw/:img", async (req, res) => {
     if(!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
         return res.status(403).end();
     } else {
