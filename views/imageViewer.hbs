@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{fileName}} by {{author}}</title>
+    <link rel="stylesheet" href="assets/css/viewer.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .cover-image {
+        
+            background-image: url("{{coverImg}}");
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="cover-image"></div>
+
+        <h1>{{fileName}}</h1>
+
+        <div class="profile">
+            <div class="picture">
+                <img src="{{authorImg}}" alt="{{author}}" class="profile-picture">
+            </div>
+            
+            <p>{{author}}
+                <div class="checkmark" style="display:{{verified}}"><i class='bx bxs-badge-check'></i><p class="tooltip">Verified</p></div>
+            </p>
+            <span class="date">{{date}}</span>
+        </div>
+
+        <div class="buttons">
+            <a class="button report" href="https://forms.gle/5HbHQ28qjYUZdt2o6" target="_blank" rel="noopener noreferrer">
+                <i class='bx bx-error'></i>
+                REPORT
+            </a>
+            <a class="button original" href="{{coverImg}}" target="_blank" rel="noopener noreferrer">
+                <i class='bx bx-link'></i>
+                RAW
+            </a>
+        </div>
+    </div>
+</body>
+</html>

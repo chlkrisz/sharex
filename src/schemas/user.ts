@@ -5,4 +5,6 @@ export const userSchema = new Schema({
     "username": String,
     "password": String,
     "displayName": String,
+    "profileImg": String,
+    "verified": Boolean
 })

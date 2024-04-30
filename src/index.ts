@@ -1,4 +1,4 @@
-import { addUser, validateLogin, addUpload, countUploads, getFileAuthor, findDeletionToken, deleteUpload, setDisplayName, setPassword } from "./mongo";
+import { addUser, validateLogin, addUpload, countUploads, getDisplayName, getUsername, findDeletionToken, deleteUpload, setDisplayName, setPassword, getVerifiedStatus, getProfilePicture } from "./mongo";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -32,6 +32,8 @@ app.use(fileUpload({
 }));
 
 app.use('/', express.static('src/public'))
+
+app.set('view engine', 'hbs');
 
 app.post("/api/users/login", async (req, res) => {
     const {username, password} = req.body;
@@ -147,7 +149,7 @@ app.get("/:img", async (req, res) => {
     if(!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
         return;
     } else {
-        const author = await getFileAuthor(req.params.img);
+        const author = await getDisplayName(req.params.img);
         //console.log(req.headers["user-agent"]);
         if(req.headers["user-agent"] && req.headers["user-agent"] === "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)") {
             return res.send(`
@@ -169,6 +171,7 @@ app.get("/:img", async (req, res) => {
             `)
         }
 
+        /*
         res.setHeader("Content-Type", mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]))
         const imagePath = path.join(__dirname, '/../uploads/', req.params.img);
         const imageStream = fs.createReadStream(imagePath);
@@ -179,6 +182,19 @@ app.get("/:img", async (req, res) => {
         });
 
         imageStream.pipe(res);
+        */
+        const imagePath = path.join(__dirname, '/../uploads/', req.params.img);
+        if(!fs.existsSync(imagePath)) return res.status(404).end();
+        const username = await getUsername(req.params.img)
+        const profilePic = await getProfilePicture(username);
+        await res.render("imageViewer", {
+            coverImg: "https://" + req.headers.host + "/uploads/raw/" + req.params.img,
+            author: username,
+            authorImg: profilePic ? profilePic : `https://${req.headers.host}/assets/img/placeholder.png`,
+            date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
+            fileName: req.params.img,
+            verified: await getVerifiedStatus(username) ? `block` : `none`
+        })
     }
 })
 
