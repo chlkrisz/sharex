@@ -63,6 +63,8 @@ h1 {
 .picture {
     display: flex;
     flex-direction: row;
+    min-width: 1vw;
+    aspect-ratio: 1/1;
 }
 
 .checkmark {
