@@ -63,7 +63,7 @@ h1 {
 .picture {
     display: flex;
     flex-direction: row;
-    min-width: 1vh;
+    min-width: 2.5vw;
     aspect-ratio: 1/1;
 }
 
