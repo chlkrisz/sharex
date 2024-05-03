@@ -173,3 +173,17 @@ h1 {
     margin-right:.5rem;
     font-size: 1.5rem;
 }
+
+@media (max-width: 1000px) {
+    .container {
+        width: 50vw;
+        height: 80vh;
+    }
+}
+
+@media (max-width: 800px) {
+    .container {
+        width: 100vw;
+        height: 100vh;
+    }
+}
