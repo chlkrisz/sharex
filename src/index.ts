@@ -190,7 +190,7 @@ app.get("/:img", async (req, res) => {
         await res.render("imageViewer", {
             coverImg: "https://" + req.headers.host + "/uploads/raw/" + req.params.img,
             author: username,
-            authorImg: profilePic ? profilePic : `https://${req.headers.host}/assets/img/placeholder.png`,
+            authorImg: profilePic ? `https://${req.headers.host}/${profilePic}` : `https://${req.headers.host}/assets/img/placeholder.png`,
             date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
             fileName: req.params.img,
             verified: await getVerifiedStatus(username) ? `block` : `none`
