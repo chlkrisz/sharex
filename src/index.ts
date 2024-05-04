@@ -1,4 +1,4 @@
-import { addUser, validateLogin, addUpload, countUploads, getDisplayName, getUsername, findDeletionToken, deleteUpload, setDisplayName, setPassword, getVerifiedStatus, getProfilePicture } from "./mongo";
+import { addUser, validateLogin, addUpload, countUploads, getDisplayName, getUsername, findDeletionToken, deleteUpload, setDisplayName, setPassword, getVerifiedStatus, getProfilePicture, generateInviteCode, invitedUserRegister } from "./mongo";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -120,6 +120,61 @@ app.post("/api/users/create", async (req, res) => {
     if(authorization!== "Bearer "+process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
     const created: boolean = await addUser(username, password) || false;
     await res.status(created === true ? 200 : 500).end(created.toString());
+})
+
+app.post("/api/users/genInvite", async (req, res) => {
+    const authorization = req.headers.authorization;
+    if(authorization!== "Bearer "+process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
+    const inviteCode: string = await generateInviteCode();
+    if(!inviteCode) return res.json({
+        "success": false
+    });
+    res.json({
+        "success": true,
+        "code": inviteCode
+    })
+})
+
+app.post("/api/users/register", async (req, res) => {
+    const {inviteCode, username, displayName, domain} = req.body;
+    if(!inviteCode || !username) {
+        return res.status(400).json({
+            "success": false,
+            "error": "Bad Request"
+        })
+    }
+    
+    const password = Array.from(Array(20), () => Math.floor(Math.random() * 36).toString(36)).join('');
+    const success:boolean = await invitedUserRegister(inviteCode, username, password, displayName || username, false);
+    if(!success) return res.status(500).json({
+        "success": false,
+        "error": "Unknown error"
+    })
+
+    const fileData = btoa(JSON.stringify({
+        "Version": "16.0.1",
+        "Name": "liba sharex",
+        "DestinationType": "ImageUploader, FileUploader",
+        "RequestMethod": "POST",
+        "RequestURL": `https://${domain}/api/users/upload`,
+        "Body": "MultipartFormData",
+        "Arguments": {
+          "username": `${username}`,
+          "password": `${password}`
+        },
+        "FileFormName": "file",
+        "URL": "https://{json:host}{json:path}",
+        "ThumbnailURL": "https://{json:host}/uploads/og/{json:file_name}",
+        "DeletionURL": "https://{json:host}/api/delete?token={json:delete_token}"
+    }));
+
+    res.writeHead(200, {
+        'Content-Disposition': `attachment; filename="${username}.sxcu"`,
+        'Content-Type': "text/plain",
+    })
+
+    const download = Buffer.from(fileData, 'base64')
+    res.end(download);
 })
 
 app.post("/api/users/changeDisplayName", async (req, res) => {

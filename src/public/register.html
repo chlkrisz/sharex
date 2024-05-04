@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" href="assets/css/register.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Regisztráció</h1>
+        <form action="/api/users/register" method="post">
+            <div class="form-group">
+                <label for="username">Felhasználónév</label>
+                <input type="text" name="username" id="username">
+            </div>
+            <div class="form-group">
+                <label for="displayName">Megjelenítési név</label>
+                <input type="text" name="displayName" id="displayName" maxlength="257">
+            </div>
+            <div class="form-group">
+                <label for="domain">Domain</label>
+                <select name="domain" id="domain">
+                    <option value="sx.liba.lol">sx.liba.lol</option>
+                    <option value="sx.epok.hu">sx.epok.hu</option>
+                    <option value="e-girl.date">e-girl.date</option>
+                    <option value="birodalomcraft.hu">birodalomcraft.hu</option>
+                    <option value="sx.yippee.hu">sx.yippee.hu</option>
+                    <option value="manninsmp.hu">manninsmp.hu</option>
+                    <option value="minepolis.hu">minepolis.hu</option>
+                    <option value="dayna.avruk.hu">dayna.avruk.hu</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="inviteCode">Meghívó kód</label>
+                <input type="text" name="inviteCode" id="inviteCode">
+            </div>
+            <input type="submit" value="Regisztrálás">
+            <p class="footer">A regisztrációs gomb megnyomásával (feltéve, hogy érvényes meghívó kódot adtál meg), azonnal elindul az SXCU fájl letöltése, amelyet fájlfeltöltésre használhatsz.</p>
+            <p class="footer">Megjegyzés: Az SXCU fájlt nem tudom visszaállítani, ezért vigyázz rá!</p>
+        </form>
+    </div>
+
+    <script src="assets/js/registerScript.js"></script>
+</body>
+</html>

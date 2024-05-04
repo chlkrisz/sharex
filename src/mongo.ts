@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import 'dotenv/config';
 import { userSchema } from './schemas/user';
 import { uploadSchema } from './schemas/upload';
+import { inviteSchema } from './schemas/invite';
 import bcrypt from 'bcrypt';
 const saltRounds: number = 10;
 import path from "path";
@@ -23,6 +24,8 @@ export async function addUser(username: string, password: string): Promise<boole
         const user = new Users({
             '_id': new mongoose.Types.ObjectId(),
             'username': username,
+            'displayName': username,
+            'verified': false,
             'password': hash
         });
 
@@ -161,5 +164,44 @@ export async function setPassword(username: string, newPassword: string): Promis
     user.password = hash;
     await user.save();
 
+    return true;
+}
+
+const genRanHex = (size: number) => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
+export async function generateInviteCode(): Promise<string> {
+    const Invites = mongoose.model("invites", inviteSchema);
+    const inviteCode = genRanHex(30);
+    const invite = new Invites({
+        "_id": new mongoose.Types.ObjectId(),
+        "code": inviteCode,
+        "redeemed": false
+    });
+
+    await invite.save();
+
+    return inviteCode;
+}
+
+export async function invitedUserRegister(inviteCode: string, username: string, password: string, displayName: string, verified: boolean): Promise<boolean> {
+    const Users = mongoose.model("users", userSchema);
+    const Invites = mongoose.model("invites", inviteSchema);
+    const invite = await Invites.findOne({ "code": inviteCode, "redeemed": false });
+    if(!invite) return false;
+
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(password, salt);
+
+    const user = new Users({
+        "_id": new mongoose.Types.ObjectId(),
+        "username": username,
+        "displayName": displayName || username,
+        "password": hash,
+        "verified": verified || false
+    })
+
+    await user.save();
+
+    await Invites.findOneAndUpdate({ "code": inviteCode, "redeemed": false }, { "redeemed": true });
     return true;
 }
