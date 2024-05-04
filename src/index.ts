@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import 'dotenv/config';
 import * as fs from 'fs';
 import mime from 'mime';
+import axios from "axios";
 
 const port = process.env.PORT || 3000;
 
@@ -175,6 +176,24 @@ app.post("/api/users/register", async (req, res) => {
 
     const download = Buffer.from(fileData, 'base64')
     res.end(download);
+})
+
+app.get("/api/discord-profile-picture", async(req,res)=>{
+    const { id } = req.query;
+    if(!id) return res.status(400).json({
+        "success": false,
+        "error": "Bad Request"
+    })
+
+    await axios.get("https://discord.com/api/v9/users/"+id, {headers: {Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN || ""}`}}).then(async(response)=>{
+        let json = response.data;
+        //console.log(json)
+        const nagyfasz = await axios.get(`https://cdn.discordapp.com/avatars/${id}/${json.avatar!}.png?size=1024`,{
+            responseType: 'stream'
+        });
+        res.setHeader("Content-Type", "image/png")
+        nagyfasz.data.pipe(res);
+    });
 })
 
 app.post("/api/users/changeDisplayName", async (req, res) => {
