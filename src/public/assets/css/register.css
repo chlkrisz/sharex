@@ -73,6 +73,11 @@ input[type="submit"] {
     margin-top: 20px;
     font-size: 0.8rem;
     color: #666;
+    text-align:justify;
+}
+
+.footer a {
+    color: #666;
 }
 
 @keyframes rainbow {

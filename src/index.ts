@@ -136,6 +136,22 @@ app.post("/api/users/genInvite", async (req, res) => {
     })
 })
 
+app.get("/register", async(_,res)=>{
+    res.sendFile("public/register.html");
+})
+
+app.get("/terms", async(_,res)=>{
+    res.sendFile("public/terms.html");
+})
+
+app.get("/tos", async(_,res)=>{
+    res.redirect("/terms");
+})
+
+app.get("/terms-of-service", async(_,res)=>{
+    res.redirect("/terms");
+})
+
 app.post("/api/users/register", async (req, res) => {
     const {inviteCode, username, domain} = req.body;
     let {displayName} = req.body; // ha később kellene módosítani
