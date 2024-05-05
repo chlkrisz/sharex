@@ -137,11 +137,11 @@ app.post("/api/users/genInvite", async (req, res) => {
 })
 
 app.get("/register", async(_,res)=>{
-    res.sendFile("public/register.html");
+    res.sendFile("./public/register.html");
 })
 
 app.get("/terms", async(_,res)=>{
-    res.sendFile("public/terms.html");
+    res.sendFile("./public/terms.html");
 })
 
 app.get("/tos", async(_,res)=>{
