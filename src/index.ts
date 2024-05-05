@@ -137,14 +137,21 @@ app.post("/api/users/genInvite", async (req, res) => {
 })
 
 app.post("/api/users/register", async (req, res) => {
-    const {inviteCode, username, displayName, domain} = req.body;
+    const {inviteCode, username, domain} = req.body;
+    let {displayName} = req.body; // ha később kellene módosítani
     if(!inviteCode || !username) {
         return res.status(400).json({
             "success": false,
             "error": "Bad Request"
         })
     }
-    
+    if(username.length < 3) {
+        return res.status(400).json({
+            "success": false,
+            "error": "The provided username is too short!"
+        })
+    }
+    if(!displayName) displayName = username;
     const password = Array.from(Array(20), () => Math.floor(Math.random() * 36).toString(36)).join('');
     const success:boolean = await invitedUserRegister(inviteCode, username, password, displayName || username, false);
     if(!success) return res.status(500).json({
