@@ -152,9 +152,9 @@ app.post("/api/users/register", async (req, res) => {
         "error": "Unknown error"
     })
 
-    const fileData = btoa(JSON.stringify({
+    const fileData = Buffer.from(JSON.stringify({
         "Version": "16.0.1",
-        "Name": "liba sharex",
+        "Name": `liba sharex - ${username}`,
         "DestinationType": "ImageUploader, FileUploader",
         "RequestMethod": "POST",
         "RequestURL": `https://${domain}/api/users/upload`,
@@ -167,7 +167,9 @@ app.post("/api/users/register", async (req, res) => {
         "URL": "https://{json:host}{json:path}",
         "ThumbnailURL": "https://{json:host}/uploads/og/{json:file_name}",
         "DeletionURL": "https://{json:host}/api/delete?token={json:delete_token}"
-    }));
+    })).toString('base64');
+    
+    //most így utólag belegondolva ennek az oda-vissza konverziónak nem túl sok értelme van, de őszintén már nem érdekel annyira hogy legyen türelmem másképp megoldani
 
     res.writeHead(200, {
         'Content-Disposition': `attachment; filename="${username}.sxcu"`,
