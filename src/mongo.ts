@@ -186,6 +186,9 @@ export async function generateInviteCode(): Promise<string> {
 export async function invitedUserRegister(inviteCode: string, username: string, password: string, displayName: string, verified: boolean): Promise<boolean> {
     const Users = mongoose.model("users", userSchema);
     const Invites = mongoose.model("invites", inviteSchema);
+
+    if((await Users.findOne({"username": username}))!==null) return false;
+
     const invite = await Invites.findOne({ "code": inviteCode, "redeemed": false });
     if(!invite) return false;
 
