@@ -252,7 +252,8 @@ app.get("/:img", async (req, res) => {
     } else {
         const author = await getDisplayName(req.params.img);
         //console.log(req.headers["user-agent"]);
-        if(req.headers["user-agent"] && req.headers["user-agent"] === "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)") {
+        const botUserAgents = ["Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)", "TelegramBot (like TwitterBot)", "Twitterbot/1.0"] 
+        if(req.headers["user-agent"] && botUserAgents.includes(req.headers["user-agent"])) {
             return res.send(`
             <!doctype html>
             <html>
