@@ -32,7 +32,7 @@ const app = express();
 import { rateLimit } from "express-rate-limit";
 
 app.set("trust proxy", "loopback");
-/*
+
 const limiter = rateLimit({
 	windowMs: 2 * 60 * 1000, // 2 min /
 	limit: 100,              // max 100 requests
@@ -41,7 +41,7 @@ const limiter = rateLimit({
 })
 
 app.use(limiter)
-*/
+
 app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
