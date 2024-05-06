@@ -1,2 +1,3 @@
 # sharex
+
 ShareX szerver
