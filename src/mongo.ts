@@ -200,6 +200,7 @@ export async function invitedUserRegister(inviteCode: string, username: string, 
         "username": username,
         "displayName": displayName || username,
         "password": hash,
+        "profileImg": "",
         "verified": verified || false
     })
 
