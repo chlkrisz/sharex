@@ -265,9 +265,12 @@ app.get("/:img", async (req, res) => {
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${author}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
 
+                    ` + req.params.img.endsWith(".mp4")? `
                     <meta property="og:video" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
                     <meta property="og:video:url" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
                     <meta property="og:video:type" content="video/mp4" />
+                    `:"" +
+                    `
                 </head>
             </html>
             `)
