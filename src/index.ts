@@ -70,14 +70,12 @@ app.post("/api/users/login", async (req, res) => {
 
 app.get("/api/counter", async (req, res) => {
   const counter = await countUploads();
-  const size = fastFolderSize("./uploads", (err, size) => {
+  fastFolderSize("./uploads", (err, size) => {
     if (err) console.error(err);
-    return size;
-  });
-
-  res.status(200).json({
-    count: counter,
-    size: size,
+    res.status(200).json({
+      count: counter,
+      size: size,
+    });
   });
 });
 
