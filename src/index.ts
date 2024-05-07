@@ -34,13 +34,13 @@ import { rateLimit } from "express-rate-limit";
 app.set("trust proxy", "loopback");
 
 const limiter = rateLimit({
-	windowMs: 2 * 60 * 1000, // 2 min /
-	limit: 100,              // max 100 requests
-	standardHeaders: 'draft-7',
-	legacyHeaders: false,
-})
+  windowMs: 2 * 60 * 1000, // 2 min /
+  limit: 100, // max 100 requests
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
 
-app.use(limiter)
+app.use(limiter);
 
 app.use(cors());
 app.use(helmet());
@@ -338,7 +338,7 @@ app.get("/:img", async (req, res) => {
         });
 
         imageStream.pipe(res);
-        */
+    */
     const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
     if (!fs.existsSync(imagePath)) return res.status(404).end();
     const username = await getUsername(req.params.img);
