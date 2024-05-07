@@ -17,6 +17,7 @@
     "express": "^4.19.2",
     "express-fileupload": "^1.5.0",
     "express-rate-limit": "^7.2.0",
+    "fast-folder-size": "^2.2.0",
     "handlebars": "^4.7.8",
     "hbs": "^4.2.0",
     "helmet": "^7.1.0",
