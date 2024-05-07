@@ -33,7 +33,7 @@ To run this project, you will need to add the following environment variables to
 
 ## <a name="api-reference">API Reference</a>
 
-#### Counter
+### Counter
 
 ```http
   GET /api/counter
@@ -41,7 +41,7 @@ To run this project, you will need to add the following environment variables to
 
 Returns the current amount of files stored in the uploads folder.
 
-#### Oembed
+### Oembed
 
 ```http
   GET /api/oembed
@@ -52,7 +52,7 @@ Returns the current amount of files stored in the uploads folder.
 | `author`      | `string` | **Required**. Text shown in the embed |
 | `file`        | `string` | **Required**. Filename                |
 
-#### Upload a file
+### Upload a file
 
 ```http
   POST /api/users/upload
@@ -64,7 +64,7 @@ Returns the current amount of files stored in the uploads folder.
 | `password` | `string` | **Required**. Password         |
 | `file`     | `file`   | **Required**. A file to upload |
 
-#### Register
+### Register
 
 ```http
   POST /api/users/register
@@ -97,7 +97,7 @@ Returns the current amount of files stored in the uploads folder.
     }
 ```
 
-#### Login (test)
+### Login (test)
 
 ```http
   POST /api/users/login
@@ -110,7 +110,7 @@ Returns the current amount of files stored in the uploads folder.
 
 **Response**: Either a 200 or 401 status code
 
-#### Get Discord profile picture
+### Get Discord profile picture
 
 ```http
   GET /api/discord-profile-picture
@@ -121,7 +121,7 @@ Returns the current amount of files stored in the uploads folder.
 | `id`          | `string` | **Required**. Discord ID              |
 
 
-#### Delete uploaded file
+### Delete uploaded file
 
 ```http
   GET /api/delete
@@ -136,7 +136,7 @@ Returns the current amount of files stored in the uploads folder.
 ok
 ```
 
-#### Create a user (SuperAdmin (you should probably use invite codes instead!))
+### Create a user (SuperAdmin (you should probably use invite codes instead!))
 
 ```http
   POST /api/users/create
@@ -154,7 +154,7 @@ ok
 true
 ```
 
-#### Generate an invite code (SuperAdmin)
+### Generate an invite code (SuperAdmin)
 
 ```http
   POST /api/users/genInvite
@@ -170,7 +170,7 @@ true
 }
 ```
 
-#### Change display name (SuperAdmin)
+### Change display name (SuperAdmin)
 
 ```http
   POST /api/users/changeDisplayName
@@ -188,7 +188,7 @@ true
 true
 ```
 
-#### Change password (SuperAdmin)
+### Change password (SuperAdmin)
 
 ```http
   POST /api/users/changePassword
