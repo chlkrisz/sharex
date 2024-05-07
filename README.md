@@ -4,11 +4,22 @@ My very own ShareX server - written in TypeScript.
 
 **Contents:**
 
-[Environment Variables](#env-variables)
+* [Environment Variables](#env-variables)
 
-[API Reference](#api-reference)
+* [API Reference](#api-reference)
+  - [Counter](#counter)
+  - [Oembed](#oembed)
+  - [Upload a file](#upload-a-file)
+  - [Register](#register)
+  - [Login](#login-test)
+  - [Get Discord profile picture](#get-discord-profile-picture)
+  - [Delete uploaded file](#delete-uploaded-file)
+  - [Create a user](#create-a-user-superadmin-you-should-probably-use-invite-codes-instead)
+  - [Generate an invite code](#generate-an-invite-code-superadmin)
+  - [Change display name](#change-display-name-superadmin)
+  - [Change password](#change-password-superadmin)
 
-[Deployment](#deployment)
+* [Deployment](#deployment)
 
 ## <a name="env-variables">Environment Variables</a>
 
@@ -85,6 +96,19 @@ Returns the current amount of files stored in the uploads folder.
         "DeletionURL":"https://{json:host}/api/delete?token={json:delete_token}
     }
 ```
+
+#### Login (test)
+
+```http
+  POST /api/users/login
+```
+
+| Parameter  | Type     | Description            |
+| :--------- | :------- | :--------------------- |
+| `username` | `string` | **Required**. Username |
+| `password` | `string` | **Required**. Password |
+
+**Response**: Either a 200 or 401 status code
 
 #### Get Discord profile picture
 
