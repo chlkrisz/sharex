@@ -3,8 +3,11 @@
 My very own ShareX server - written in TypeScript.
 
 **Contents:**
+
 [Environment Variables](#env-variables)
+
 [API Reference](#api-reference)
+
 [Deployment](#deployment)
 
 ## <a name="env-variables">Environment Variables</a>
