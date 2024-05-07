@@ -2,7 +2,12 @@
 
 My very own ShareX server - written in TypeScript.
 
-## Environment Variables
+**Contents:**
+[Environment Variables](#env-variables)
+[API Reference](#api-reference)
+[Deployment](#deployment)
+
+## <a name="env-variables">Environment Variables</a>
 
 To run this project, you will need to add the following environment variables to your .env file
 
@@ -12,7 +17,7 @@ To run this project, you will need to add the following environment variables to
 
 `DISCORD_BOT_TOKEN` = a Discord bot token, to fetch profile pictures from users
 
-## API Reference
+## <a name="api-reference">API Reference</a>
 
 #### Counter
 
@@ -174,7 +179,7 @@ true
 true
 ```
 
-## Deployment
+## <a name="deploy">Deployment</a>
 
 To deploy this project run
 
