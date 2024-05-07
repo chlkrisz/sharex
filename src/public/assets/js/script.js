@@ -4,7 +4,7 @@
   const uploadedFiles = await fetch(`/api/counter`);
   const raw = await uploadedFiles.json();
   uploadedFilesSpan.innerText = raw.count;
-  sizeSpan.innerText = raw.size / 1000000; // Bytes to Megabytes
+  sizeSpan.innerText = Math.round(raw.size / 1000000); // Bytes to Megabytes
 
   if (raw.count == 1) document.querySelector("span#s").style.display = "none"; // Don't ask why, I don't know either!
 
