@@ -2,6 +2,8 @@
 
 My very own ShareX server - written in TypeScript.
 
+[License (ODbL)](LICENSE.md)
+
 **Contents:**
 
 * [Environment Variables](#env-variables)
