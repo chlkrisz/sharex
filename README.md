@@ -5,7 +5,6 @@ My very own ShareX server - written in TypeScript.
 **Contents:**
 
 * [Environment Variables](#env-variables)
-
 * [API Reference](#api-reference)
   - [Counter](#counter)
   - [Oembed](#oembed)
@@ -18,7 +17,6 @@ My very own ShareX server - written in TypeScript.
   - [Generate an invite code](#generate-an-invite-code-superadmin)
   - [Change display name](#change-display-name-superadmin)
   - [Change password](#change-password-superadmin)
-
 * [Deployment](#deployment)
 
 ## <a name="env-variables">Environment Variables</a>
