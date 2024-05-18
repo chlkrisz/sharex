@@ -180,7 +180,7 @@ const genRanHex = (size: number) =>
 
 export async function generateInviteCode(): Promise<string> {
   const Invites = mongoose.model("invites", inviteSchema);
-  const inviteCode = genRanHex(30);
+  const inviteCode = genRanHex(40);
   const invite = new Invites({
     _id: new mongoose.Types.ObjectId(),
     code: inviteCode,

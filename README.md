@@ -6,8 +6,8 @@ My very own ShareX server - written in TypeScript.
 
 **Contents:**
 
-* [Environment Variables](#env-variables)
-* [API Reference](#api-reference)
+- [Environment Variables](#env-variables)
+- [API Reference](#api-reference)
   - [Counter](#counter)
   - [Oembed](#oembed)
   - [Upload a file](#upload-a-file)
@@ -19,7 +19,7 @@ My very own ShareX server - written in TypeScript.
   - [Generate an invite code](#generate-an-invite-code-superadmin)
   - [Change display name](#change-display-name-superadmin)
   - [Change password](#change-password-superadmin)
-* [Deployment](#deployment)
+- [Deployment](#deployment)
 
 ## <a name="env-variables">Environment Variables</a>
 
@@ -47,10 +47,10 @@ Returns the current amount of files stored in the uploads folder.
   GET /api/oembed
 ```
 
-| Parameter     | Type     | Description                           |
-| :-----------  | :------- | :------------------------------------ |
-| `author`      | `string` | **Required**. Text shown in the embed |
-| `file`        | `string` | **Required**. Filename                |
+| Parameter | Type     | Description                           |
+| :-------- | :------- | :------------------------------------ |
+| `author`  | `string` | **Required**. Text shown in the embed |
+| `file`    | `string` | **Required**. Filename                |
 
 ### Upload a file
 
@@ -70,14 +70,15 @@ Returns the current amount of files stored in the uploads folder.
   POST /api/users/register
 ```
 
-| Parameter     | Type     | Description                           |
-| :------------ | :------- | :------------------------------------ |
-| `username`    | `string` | **Required**. Username                |
-| `domain`      | `string` | **Required**. SX domain to use        |
-| `inviteCode`  | `string` | **Required**. Invite code             |
-| `displayName` | `string` | Text displayed in embed               |
+| Parameter     | Type     | Description                    |
+| :------------ | :------- | :----------------------------- |
+| `username`    | `string` | **Required**. Username         |
+| `domain`      | `string` | **Required**. SX domain to use |
+| `inviteCode`  | `string` | **Required**. Invite code      |
+| `displayName` | `string` | Text displayed in embed        |
 
-**Response** *(automatically downloaded SXCU file)*
+**Response** _(automatically downloaded SXCU file)_
+
 ```json
     {
         "Version":"16.0.1",
@@ -116,10 +117,9 @@ Returns the current amount of files stored in the uploads folder.
   GET /api/discord-profile-picture
 ```
 
-| Parameter     | Type     | Description                           |
-| :------------ | :------- | :------------------------------------ |
-| `id`          | `string` | **Required**. Discord ID              |
-
+| Parameter | Type     | Description              |
+| :-------- | :------- | :----------------------- |
+| `id`      | `string` | **Required**. Discord ID |
 
 ### Delete uploaded file
 
@@ -127,11 +127,12 @@ Returns the current amount of files stored in the uploads folder.
   GET /api/delete
 ```
 
-| Parameter     | Type     | Description                        |
-| :------------ | :------- | :--------------------------------- |
-| `token`       | `string` | **Required**. Deletion token       |
+| Parameter | Type     | Description                  |
+| :-------- | :------- | :--------------------------- |
+| `token`   | `string` | **Required**. Deletion token |
 
 **Response**
+
 ```
 ok
 ```
@@ -144,12 +145,13 @@ ok
 
 **Authentication**: `Bearer SUPERADMIN_UUID`
 
-| Parameter  | Type     | Description                    |
-| :--------- | :------- | :----------------------------- |
-| `username` | `string` | **Required**. Username         |
-| `password` | `string` | **Required**. Password         |
+| Parameter  | Type     | Description            |
+| :--------- | :------- | :--------------------- |
+| `username` | `string` | **Required**. Username |
+| `password` | `string` | **Required**. Password |
 
 **Response**
+
 ```
 true
 ```
@@ -163,10 +165,11 @@ true
 **Authentication**: `Bearer SUPERADMIN_UUID`
 
 **Response**
+
 ```json
 {
-	"success": true,
-	"code": "invite-code-here"
+  "success": true,
+  "code": "invite-code-here"
 }
 ```
 
@@ -178,12 +181,13 @@ true
 
 **Authentication**: `Bearer SUPERADMIN_UUID`
 
-| Parameter     | Type     | Description                            |
-| :------------ | :------- | :------------------------------------- |
-| `username`    | `string` | **Required**. Username                 |
-| `displayName` | `string` | **Required**. New display Name         |
+| Parameter     | Type     | Description                    |
+| :------------ | :------- | :----------------------------- |
+| `username`    | `string` | **Required**. Username         |
+| `displayName` | `string` | **Required**. New display Name |
 
 **Response**
+
 ```
 true
 ```
@@ -196,12 +200,13 @@ true
 
 **Authentication**: `Bearer SUPERADMIN_UUID`
 
-| Parameter     | Type     | Description                        |
-| :------------ | :------- | :--------------------------------- |
-| `username`    | `string` | **Required**. Username             |
-| `newPassword` | `string` | **Required**. New password         |
+| Parameter     | Type     | Description                |
+| :------------ | :------- | :------------------------- |
+| `username`    | `string` | **Required**. Username     |
+| `newPassword` | `string` | **Required**. New password |
 
 **Response**
+
 ```
 true
 ```

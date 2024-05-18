@@ -25,6 +25,7 @@ import * as fs from "fs";
 import mime from "mime";
 import axios from "axios";
 import fastFolderSize from "fast-folder-size";
+import crypto from "crypto";
 
 const port = process.env.PORT || 3000;
 
@@ -197,9 +198,7 @@ app.post("/api/users/register", async (req, res) => {
     });
   }
   if (!displayName) displayName = username;
-  const password = Array.from(Array(20), () =>
-    Math.floor(Math.random() * 36).toString(36),
-  ).join("");
+  const password = generatePassword();
   const success: boolean = await invitedUserRegister(
     inviteCode,
     username,
@@ -407,3 +406,22 @@ app.get("/api/delete", async (req, res) => {
 app.listen(port, () => {
   console.log("Listening");
 });
+
+const generatePassword = (length = 32) => {
+  const lowerCase = "abcdefghijklmnopqrstuvwxyz";
+  const upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
+  const specialChars = "!@#$%^&*()_+[]{}|;:,.<>?";
+  let password = [
+    lowerCase[Math.floor(Math.random() * lowerCase.length)],
+    upperCase[Math.floor(Math.random() * upperCase.length)],
+    numbers[Math.floor(Math.random() * numbers.length)],
+    specialChars[Math.floor(Math.random() * specialChars.length)],
+  ];
+  const allChars = lowerCase + upperCase + numbers + specialChars;
+  for (let i = password.length; i < length; i++) {
+    const randomIndex = crypto.randomInt(0, allChars.length);
+    password.push(allChars[randomIndex]);
+  }
+  return password.join("");
+};
