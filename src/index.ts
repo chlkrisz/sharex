@@ -257,14 +257,21 @@ app.get("/api/discord-profile-picture", async (req, res) => {
     .then(async (response) => {
       let json = response.data;
       //console.log(json)
-      const nagyfasz = await axios.get(
-        `https://cdn.discordapp.com/avatars/${id}/${json.avatar!}.png?size=1024`,
+      if(!json.avatar) {
+        res.status(400).json({
+          success: false,
+          error: "The Discord user doesn't have a profile picture set!",
+        });
+        return;
+      }
+      const image = await axios.get(
+        `https://cdn.discordapp.com/avatars/${id}/${json.avatar}.png?size=1024`,
         {
           responseType: "stream",
         },
       );
       res.setHeader("Content-Type", "image/png");
-      nagyfasz.data.pipe(res);
+      image.data.pipe(res);
     });
 });
 
