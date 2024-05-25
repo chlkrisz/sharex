@@ -94,7 +94,7 @@ Returns the current amount of files stored in the uploads folder.
         "FileFormName":"file",
         "URL":"https://{json:host}{json:path}",
         "ThumbnailURL":"https://{json:host}/uploads/og/{json:file_name}",
-        "DeletionURL":"https://{json:host}/api/delete?token={json:delete_token}
+        "DeletionURL":"https://{json:host}/api/delete?token={json:delete_token}"
     }
 ```
 
