@@ -272,6 +272,13 @@ app.get("/api/discord-profile-picture", async (req, res) => {
       );
       res.setHeader("Content-Type", "image/png");
       image.data.pipe(res);
+    }).catch(error=>{
+      res.status(400).json({
+        success: false,
+        error: "The Discord user doesn't exist!",
+      });
+      console.log("Error:", error);
+      return;
     });
 });
 
