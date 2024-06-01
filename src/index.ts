@@ -351,7 +351,7 @@ app.get("/:img", async (req, res) => {
                     <meta property="og:title" content="‎‎‎‎‎‎‎‎">
                     <meta name="theme-color" content="${userData["embed"]["color"]}">
                     <meta property="og:image" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
-                    <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["username"]}&file=${req.params.img}" />
+                    <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
                     <meta name="twitter:image" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
                     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-refresh">
@@ -370,8 +370,8 @@ app.get("/:img", async (req, res) => {
       coverImg:
         "https://" + req.headers.host + "/uploads/raw/" + req.params.img,
       author: userData["displayName"] || userData["username"],
-      authorImg: userData["profile-picture"]
-        ? `https://${req.headers.host}/${userData["profile-picture"]}`
+      authorImg: userData["profilePicture"]
+        ? `https://${req.headers.host}/${userData["profilePicture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
       fileName: req.params.img,
