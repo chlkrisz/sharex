@@ -242,8 +242,6 @@ app.post("/api/users/register", async (req, res) => {
   res.writeHead(200, {
     "Content-Disposition": `attachment; filename="${username}.sxcu"`,
     "Content-Type": "text/plain",
-    "Content-Transfer-Encoding": "base64",
-    "Content-Length": fileData.length
   });
 
   const download = Buffer.from(fileData, "base64");
