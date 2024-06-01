@@ -121,7 +121,7 @@ export async function getUsername(filename: string): Promise<string> {
 */
 export async function getUserDataByUpload(filename: string): Promise<{
   username: string,
-  "profile-picture": string,
+  profilePicture: string,
   displayName: string,
   verified: boolean,
   embed: {
@@ -135,7 +135,7 @@ export async function getUserDataByUpload(filename: string): Promise<{
   if (!upload || !upload.username)
     return {
       username: "unknown",
-      "profile-picture": "/assets/img/placeholder.png",
+      profilePicture: "/assets/img/placeholder.png",
       displayName: "unknown",
       verified: false,
       embed: {
@@ -148,7 +148,7 @@ export async function getUserDataByUpload(filename: string): Promise<{
   if (!user || !user.username)
     return {
       username: "unknown",
-      "profile-picture": "/assets/img/placeholder.png",
+      profilePicture: "/assets/img/placeholder.png",
       displayName: "unknown",
       verified: false,
       embed: {
@@ -159,7 +159,7 @@ export async function getUserDataByUpload(filename: string): Promise<{
 
   return {
     username: user.username,
-    "profile-picture": user.profileImg || "/assets/img/placeholder.png",
+    profilePicture: user.profileImg || "/assets/img/placeholder.png",
     displayName: user.displayName || user.username,
     verified: user.verified || false,
     embed: {
