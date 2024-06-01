@@ -221,7 +221,6 @@ app.post("/api/users/register", async (req, res) => {
 
   const fileData = Buffer.from(
     JSON.stringify({
-      Version: "16.0.1",
       Name: `liba sharex - ${username}`,
       DestinationType: "ImageUploader, FileUploader",
       RequestMethod: "POST",
