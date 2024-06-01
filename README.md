@@ -6,20 +6,21 @@ My very own ShareX server - written in TypeScript.
 
 **Contents:**
 
-- [Environment Variables](#env-variables)
-- [API Reference](#api-reference)
-  - [Counter](#counter)
-  - [Oembed](#oembed)
-  - [Upload a file](#upload-a-file)
-  - [Register](#register)
-  - [Login](#login-test)
-  - [Get Discord profile picture](#get-discord-profile-picture)
-  - [Delete uploaded file](#delete-uploaded-file)
-  - [Create a user](#create-a-user-superadmin-you-should-probably-use-invite-codes-instead)
-  - [Generate an invite code](#generate-an-invite-code-superadmin)
-  - [Change display name](#change-display-name-superadmin)
-  - [Change password](#change-password-superadmin)
-- [Deployment](#deployment)
+- [ShareX server](#sharex-server)
+  - [Environment Variables](#environment-variables)
+  - [API Reference](#api-reference)
+    - [Counter](#counter)
+    - [Oembed](#oembed)
+    - [Upload a file](#upload-a-file)
+    - [Register](#register)
+    - [Login (used for testing purposes)](#login-used-for-testing-purposes)
+    - [Get Discord profile picture](#get-discord-profile-picture)
+    - [Delete uploaded file](#delete-uploaded-file)
+    - [Create a user (SuperAdmin (you should use invite codes instead!))](#create-a-user-superadmin-you-should-use-invite-codes-instead)
+    - [Generate an invite code (SuperAdmin)](#generate-an-invite-code-superadmin)
+    - [Change display name (SuperAdmin)](#change-display-name-superadmin)
+    - [Change password (SuperAdmin)](#change-password-superadmin)
+  - [Deployment](#deployment)
 
 ## <a name="env-variables">Environment Variables</a>
 
@@ -70,35 +71,36 @@ Returns the current amount of files stored in the uploads folder.
   POST /api/users/register
 ```
 
-| Parameter     | Type     | Description                    |
-| :------------ | :------- | :----------------------------- |
-| `username`    | `string` | **Required**. Username         |
-| `domain`      | `string` | **Required**. SX domain to use |
-| `inviteCode`  | `string` | **Required**. Invite code      |
-| `displayName` | `string` | Text displayed in embed        |
+| Parameter     | Type     | Description                               | Default value           |
+| :------------ | :------- | :---------------------------------------- | :---------------------- |
+| `username`    | `string` | **Required**. Username                    | -                       |
+| `domain`      | `string` | **Required**. SX domain to use            | -                       |
+| `inviteCode`  | `string` | **Required**. Invite code                 | -                       |
+| `displayName` | `string` | Your display name on the page             | username                |
+| `embedTitle`  | `string` | Text displayed in the embed               | displayName or username |
+| `embedColor`  | `string` | Color of the embed on Twitter and Discord | #050505                 |
 
 **Response** _(automatically downloaded SXCU file)_
 
 ```json
-    {
-        "Version":"16.0.1",
-        "Name":"liba sharex - username",
-        "DestinationType":"ImageUploader, FileUploader",
-        "RequestMethod":"POST",
-        "RequestURL":"https://[USER SELECTED DOMAIN]/api/users/upload",
-        "Body":"MultipartFormData",
-        "Arguments":{
-            "username":"username",
-            "password":"password"
-        },
-        "FileFormName":"file",
-        "URL":"https://{json:host}{json:path}",
-        "ThumbnailURL":"https://{json:host}/uploads/og/{json:file_name}",
-        "DeletionURL":"https://{json:host}/api/delete?token={json:delete_token}"
-    }
+{
+  "Name": "liba sharex - username",
+  "DestinationType": "ImageUploader, FileUploader",
+  "RequestMethod": "POST",
+  "RequestURL": "https://[USER SELECTED DOMAIN]/api/users/upload",
+  "Body": "MultipartFormData",
+  "Arguments": {
+    "username": "username",
+    "password": "password"
+  },
+  "FileFormName": "file",
+  "URL": "https://{json:host}{json:path}",
+  "ThumbnailURL": "https://{json:host}/uploads/og/{json:file_name}",
+  "DeletionURL": "https://{json:host}/api/delete?token={json:delete_token}"
+}
 ```
 
-### Login (test)
+### Login (used for testing purposes)
 
 ```http
   POST /api/users/login
@@ -131,13 +133,21 @@ Returns the current amount of files stored in the uploads folder.
 | :-------- | :------- | :--------------------------- |
 | `token`   | `string` | **Required**. Deletion token |
 
-**Response**
+**Responses**
+
+If `token` is valid:
 
 ```
-ok
+File deleted successfully!
 ```
 
-### Create a user (SuperAdmin (you should probably use invite codes instead!))
+If `token` is invalid:
+
+```
+There was an error deleting the uploaded file. Did you provide the correct token?
+```
+
+### Create a user (SuperAdmin (you should use [invite codes](#generate-an-invite-code-superadmin) instead!))
 
 ```http
   POST /api/users/create
@@ -216,6 +226,8 @@ true
 To deploy this project run
 
 ```bash
+  git clone https://github.com/chlkrisz/sharex.git && cd sharex
+  mkdir uploads
   npm install
   npx ts-node src/index.ts
 ```

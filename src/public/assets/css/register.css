@@ -59,6 +59,13 @@ select {
   border-radius: 5px;
 }
 
+input[type="color"] {
+  width: 100%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
 input[type="submit"] {
   width: 100%;
   padding: 10px;
@@ -78,6 +85,15 @@ input[type="submit"] {
 
 .footer a {
   color: #666;
+}
+
+span {
+  color: #a00;
+}
+
+i {
+  color: #0006;
+  font-weight: 400;
 }
 
 @keyframes rainbow {

@@ -3,16 +3,18 @@ import {
   validateLogin,
   addUpload,
   countUploads,
-  getDisplayName,
-  getUsername,
-  findDeletionToken,
-  deleteUpload,
-  setDisplayName,
+  //getDisplayName,
+  //getUsername,
+  //findDeletionToken,
+  //deleteUpload,
+  //setDisplayName,
   setPassword,
-  getVerifiedStatus,
-  getProfilePicture,
+  //getVerifiedStatus,
+  //getProfilePicture,
   generateInviteCode,
   invitedUserRegister,
+  getUserDataByUpload,
+  deleteUploadWithToken,
 } from "./mongo";
 import express from "express";
 import cors from "cors";
@@ -182,8 +184,12 @@ app.get("/terms-of-service", async (_, res) => {
   res.redirect("/terms");
 });
 
+app.get("/thanks", async (_, res) => {
+  res.sendFile(path.join(__dirname, "/public/thanks.html"));
+});
+
 app.post("/api/users/register", async (req, res) => {
-  const { inviteCode, username, domain } = req.body;
+  const { inviteCode, username, domain, embedTitle, embedColor } = req.body;
   let { displayName } = req.body; // ha később kellene módosítani
   if (!inviteCode || !username) {
     return res.status(400).json({
@@ -203,13 +209,14 @@ app.post("/api/users/register", async (req, res) => {
     inviteCode,
     username,
     password,
+    embedColor || "#050505",
+    embedTitle || displayName || username,
     displayName || username,
-    false,
   );
   if (!success)
     return res.status(500).json({
       success: false,
-      error: "Unknown error",
+      error: "Unknown error, please try again.",
     });
 
   const fileData = Buffer.from(
@@ -236,6 +243,9 @@ app.post("/api/users/register", async (req, res) => {
   res.writeHead(200, {
     "Content-Disposition": `attachment; filename="${username}.sxcu"`,
     "Content-Type": "text/plain",
+    "Content-Transfer-Encoding": "base64",
+    "Content-Length": fileData.length,
+    Location: `https://${req.header("Origin")}/thanks`,
   });
 
   const download = Buffer.from(fileData, "base64");
@@ -257,7 +267,7 @@ app.get("/api/discord-profile-picture", async (req, res) => {
     .then(async (response) => {
       let json = response.data;
       //console.log(json)
-      if(!json.avatar) {
+      if (!json.avatar) {
         res.status(400).json({
           success: false,
           error: "The Discord user doesn't have a profile picture set!",
@@ -272,7 +282,8 @@ app.get("/api/discord-profile-picture", async (req, res) => {
       );
       res.setHeader("Content-Type", "image/png");
       image.data.pipe(res);
-    }).catch(error=>{
+    })
+    .catch((error) => {
       res.status(400).json({
         success: false,
         error: "The Discord user doesn't exist!",
@@ -282,6 +293,7 @@ app.get("/api/discord-profile-picture", async (req, res) => {
     });
 });
 
+/*
 app.post("/api/users/changeDisplayName", async (req, res) => {
   const { username, displayName } = req.body;
   const authorization = req.headers.authorization;
@@ -292,6 +304,7 @@ app.post("/api/users/changeDisplayName", async (req, res) => {
   const changed: boolean = await setDisplayName(username, displayName);
   await res.status(changed === true ? 200 : 500).end(changed.toString());
 });
+*/
 
 app.post("/api/users/changePassword", async (req, res) => {
   const { username, newPassword } = req.body;
@@ -309,7 +322,6 @@ app.get("/uploads/og", async (_, res) => {
   res.redirect("https://www.youtube.com/watch?v=WsBv8--PX3o");
 });
 
-// Legacy stuff
 app.get("/uploads/:img", async (req, res) => {
   res.redirect("../" + req.params.img);
 });
@@ -318,12 +330,17 @@ app.get("/:img", async (req, res) => {
   if (!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
     return;
   } else {
-    const author = await getDisplayName(req.params.img);
+    const userData = await getUserDataByUpload(req.params.img);
+    if (!userData) return res.end();
+    //const author = await getDisplayName(req.params.img);
     //console.log(req.headers["user-agent"]);
     const botUserAgents = [
       "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)",
       "TelegramBot (like TwitterBot)",
       "Twitterbot/1.0",
+      "@LinkArchiver twitter bot",
+      "Twitterbot/0.1",
+      "Valve/Steam HTTP Client 1.0 (SteamChatURLLookup)",
     ];
     if (
       req.headers["user-agent"] &&
@@ -333,43 +350,35 @@ app.get("/:img", async (req, res) => {
             <!doctype html>
             <html>
                 <head>
-                    <meta property="og:author" content="${author}">
+                    <meta property="og:author" content="${userData["embed"]["title"]}">
                     <meta property="og:title" content="‎‎‎‎‎‎‎‎">
-                    <meta name="theme-color" content="#050505">
+                    <meta name="theme-color" content="${userData["embed"]["color"]}">
                     <meta property="og:image" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
-                    <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${author}&file=${req.params.img}" />
+                    <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["username"]}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
+                    <meta name="twitter:image" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
+                    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-refresh">
+                    <meta http-equiv="Pragma" content="no-cache">
+                    <meta http-equiv="Expires" content="0">
+                    <meta http-equiv="refresh" content="0; url=https://${req.headers.host}/uploads/raw/${req.params.img}">
                 </head>
             </html>
             `);
     }
 
-    /*
-        res.setHeader("Content-Type", mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]))
-        const imagePath = path.join(__dirname, '/../uploads/', req.params.img);
-        const imageStream = fs.createReadStream(imagePath);
-
-        imageStream.on('error', (err) => {
-            //console.error('Error reading file:', err);
-            res.status(404).end();
-        });
-
-        imageStream.pipe(res);
-    */
     const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
     if (!fs.existsSync(imagePath)) return res.status(404).end();
-    const username = await getUsername(req.params.img);
-    const profilePic = await getProfilePicture(username);
+
     await res.render("imageViewer", {
       coverImg:
         "https://" + req.headers.host + "/uploads/raw/" + req.params.img,
-      author: username,
-      authorImg: profilePic
-        ? `https://${req.headers.host}/${profilePic}`
+      author: userData["username"],
+      authorImg: userData["profile-picture"]
+        ? `https://${req.headers.host}/${userData["profile-picture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
       fileName: req.params.img,
-      verified: (await getVerifiedStatus(username)) ? `block` : `none`,
+      verified: (await userData["verified"]) ? `block` : `none`,
     });
   }
 });
@@ -404,16 +413,24 @@ app.get("/api/delete", async (req, res) => {
   if (!req.query.token) return res.status(401).end();
 
   const token = req.query.token as string;
+  /*
   const file = await findDeletionToken(token);
 
   if (!file) return res.status(403).end();
 
   const deleted = await deleteUpload(file);
+  */
+
+  const deleted = await deleteUploadWithToken(token);
 
   if (deleted) {
-    res.status(200).end("ok");
+    res.status(200).end("File deleted successfully!");
   } else {
-    res.status(500).end();
+    res
+      .status(500)
+      .end(
+        "There was an error deleting the uploaded file. Did you provide the correct token?",
+      );
   }
 });
 
@@ -425,7 +442,7 @@ const generatePassword = (length = 32) => {
   const lowerCase = "abcdefghijklmnopqrstuvwxyz";
   const upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const numbers = "0123456789";
-  const specialChars = "!@#$%^&*()_+[]{}|;:,.<>?";
+  const specialChars = "!@#$%&*_+?";
   let password = [
     lowerCase[Math.floor(Math.random() * lowerCase.length)],
     upperCase[Math.floor(Math.random() * upperCase.length)],

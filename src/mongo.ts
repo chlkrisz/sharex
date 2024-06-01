@@ -27,9 +27,12 @@ export async function addUser(
     const user = new Users({
       _id: new mongoose.Types.ObjectId(),
       username: username,
-      displayName: username,
-      verified: false,
       password: hash,
+      embedColor: "#050505",
+      embedTitle: username,
+      displayName: username,
+      profileImg: "",
+      verified: false,
     });
 
     await user.save();
@@ -78,7 +81,7 @@ export async function countUploads(): Promise<number> {
 
   return count;
 }
-
+/*
 export async function getDisplayName(filename: string): Promise<string> {
   const Uploads = mongoose.model("uploads", uploadSchema);
   const Users = mongoose.model("users", userSchema);
@@ -115,7 +118,84 @@ export async function getUsername(filename: string): Promise<string> {
   if (user && user.username) return user.username;
   return "unknown";
 }
+*/
+export async function getUserDataByUpload(filename: string): Promise<{
+  username: string,
+  "profile-picture": string,
+  displayName: string,
+  verified: boolean,
+  embed: {
+    color: string,
+    title: string,
+  },
+}> {
+  const Uploads = mongoose.model("uploads", uploadSchema);
+  const Users = mongoose.model("users", userSchema);
+  const upload = await Uploads.findOne({ filename: filename });
+  if (!upload || !upload.username)
+    return {
+      username: "unknown",
+      "profile-picture": "/assets/img/placeholder.png",
+      displayName: "unknown",
+      verified: false,
+      embed: {
+        color: "#050505",
+        title: "Unknown Uploader",
+      },
+    };
 
+  const user = await Users.findOne({ username: upload.username });
+  if (!user || !user.username)
+    return {
+      username: "unknown",
+      "profile-picture": "/assets/img/placeholder.png",
+      displayName: "unknown",
+      verified: false,
+      embed: {
+        color: "#050505",
+        title: "Unknown Uploader",
+      },
+    };
+
+  return {
+    username: user.username,
+    "profile-picture": user.profileImg || "/assets/img/placeholder.png",
+    displayName: user.displayName || user.username,
+    verified: user.verified || false,
+    embed: {
+      color: user.embedColor || "#050505",
+      title: user.embedTitle || user.displayName || user.username,
+    },
+  };
+}
+
+export async function getUserDataByName(username: string): Promise<Object> {
+  const Users = mongoose.model("users", userSchema);
+  const user = await Users.findOne({ username: username });
+  if (!user || !user.username)
+    return {
+      username: "unknown",
+      "profile-picture": "assets/img/placeholder.png",
+      displayName: "unknown",
+      verified: false,
+      embed: {
+        color: "#050505",
+        title: "Unknown Uploader",
+      },
+    };
+
+  return {
+    username: user.username,
+    "profile-picture": user.profileImg || "assets/img/placeholder.png",
+    displayName: user.displayName || user.username,
+    verified: user.verified || false,
+    embed: {
+      color: user.embedColor || "#050505",
+      title: user.embedTitle || user.displayName || user.username,
+    },
+  };
+}
+/*
 export async function findDeletionToken(token: string): Promise<string> {
   const Uploads = mongoose.model("uploads", uploadSchema);
   const upload = await Uploads.findOne({ delete_token: token });
@@ -139,7 +219,25 @@ export async function deleteUpload(filename: string): Promise<boolean> {
 
   return true;
 }
+*/
+export async function deleteUploadWithToken(token: string): Promise<boolean> {
+  const Uploads = mongoose.model("uploads", uploadSchema);
+  const upload = await Uploads.findOne({ delete_token: token });
+  if (!upload || !upload.filename) {
+    return false;
+  }
 
+  const filePath = path.join(__dirname, "/../uploads/", upload.filename);
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+
+  await Uploads.deleteOne({ filename: upload.filename, delete_token: token });
+
+  return true;
+}
+
+/*
 export async function setDisplayName(
   username: string,
   displayName: string,
@@ -155,6 +253,7 @@ export async function setDisplayName(
 
   return true;
 }
+*/
 
 export async function setPassword(
   username: string,
@@ -196,8 +295,9 @@ export async function invitedUserRegister(
   inviteCode: string,
   username: string,
   password: string,
+  embedColor: string,
+  embedTitle: string,
   displayName: string,
-  verified: boolean,
 ): Promise<boolean> {
   const Users = mongoose.model("users", userSchema);
   const Invites = mongoose.model("invites", inviteSchema);
@@ -213,10 +313,12 @@ export async function invitedUserRegister(
   const user = new Users({
     _id: new mongoose.Types.ObjectId(),
     username: username,
-    displayName: displayName || username,
     password: hash,
+    embedColor: embedColor,
+    embedTitle: embedTitle,
+    displayName: displayName,
     profileImg: "",
-    verified: verified || false,
+    verified: false,
   });
 
   await user.save();

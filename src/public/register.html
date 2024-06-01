@@ -11,21 +11,39 @@
       <h1>Regisztráció</h1>
       <form action="/api/users/register" method="post">
         <div class="form-group">
-          <label for="username">Felhasználónév</label>
+          <label for="username">Felhasználónév<span>*</span></label>
           <input type="text" name="username" id="username" required />
         </div>
         <div class="form-group">
-          <label for="displayName">Megjelenítési név</label>
+          <label for="displayName"
+            >Embed név <i>(alap érték a felhasználóneved)</i></label
+          >
+          <input
+            type="text"
+            name="embedTitle"
+            id="embedTitle"
+            maxlength="257"
+          />
+        </div>
+        <div class="form-group">
+          <label for="displayName"
+            >Embed szín <i>(alap érték: #050505)</i></label
+          >
+          <input type="color" name="embedColor" id="embedColor" maxlength="7" />
+        </div>
+        <div class="form-group">
+          <label for="displayName"
+            >Megjelenítési név <i>(alap érték a felhasználóneved)</i></label
+          >
           <input
             type="text"
             name="displayName"
             id="displayName"
-            maxlength="257"
-            required
+            maxlength="50"
           />
         </div>
         <div class="form-group">
-          <label for="domain">Domain</label>
+          <label for="domain">Domain<span>*</span></label>
           <select name="domain" id="domain">
             <option value="sx.liba.lol">sx.liba.lol</option>
             <option value="sx.epok.hu">sx.epok.hu</option>
@@ -36,16 +54,17 @@
             <option value="minepolis.hu">minepolis.hu</option>
             <option value="dayna.avruk.hu">dayna.avruk.hu</option>
             <option value="skeetless.hu">skeetless.hu</option>
+            <option value="sx.r34videos.zip">sx.r34videos.zip</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="inviteCode">Meghívó kód</label>
+          <label for="inviteCode">Meghívó kód<span>*</span></label>
           <input type="text" name="inviteCode" id="inviteCode" required />
         </div>
         <input type="submit" value="Regisztrálás" />
         <p class="footer">
           A regisztrációs gomb megnyomásával (feltéve, hogy érvényes meghívó
-          kódot adtál meg) elfogadod a
+          kódot adtál meg) megerősíted, hogy elolvastad és elfogadod a
           <a href="/terms" target="_blank">Felhasználási Feltételeket</a>, és
           azonnal elindul az SXCU fájl letöltése, amelyet fájlfeltöltésre
           használhatsz.
@@ -53,6 +72,9 @@
         <p class="footer">
           Megjegyzés: Az SXCU fájlt <b>nem tudom visszaállítani</b>, ezért
           vigyázz rá!
+        </p>
+        <p class="footer">
+          <b><span>*</span></b> = Kötelező megadni
         </p>
       </form>
     </div>
