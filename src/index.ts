@@ -243,8 +243,7 @@ app.post("/api/users/register", async (req, res) => {
     "Content-Disposition": `attachment; filename="${username}.sxcu"`,
     "Content-Type": "text/plain",
     "Content-Transfer-Encoding": "base64",
-    "Content-Length": fileData.length,
-    Location: `https://${req.header("Origin")}/thanks`,
+    "Content-Length": fileData.length
   });
 
   const download = Buffer.from(fileData, "base64");
@@ -371,7 +370,7 @@ app.get("/:img", async (req, res) => {
     await res.render("imageViewer", {
       coverImg:
         "https://" + req.headers.host + "/uploads/raw/" + req.params.img,
-      author: userData["username"],
+      author: userData["displayName"] || userData["username"],
       authorImg: userData["profile-picture"]
         ? `https://${req.headers.host}/${userData["profile-picture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
