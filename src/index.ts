@@ -402,7 +402,10 @@ app.get("/uploads/raw/:img", async (req, res) => {
       res.status(404).end();
     });
 
-    imageStream.pipe(res);
+    imageStream.on("readable", () => {
+      imageStream.pipe(res);
+      // wacky ass megoldas de nem erdekel
+    })
   }
 });
 
