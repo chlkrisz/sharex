@@ -390,19 +390,24 @@ app.get("/uploads/raw/:img", async (req, res) => {
     return res.status(403).end();
   } else {
     const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
-    const imageStream = fs.createReadStream(imagePath);
+    
+    if(fs.existsSync(imagePath)){
+      const imageStream = fs.createReadStream(imagePath);
+      
+      res.set({
+        "Content-Type": mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]),
+        "Content-Length": fs.statSync(imagePath).size.toString(),
+      });
 
-    res.set({
-      "Content-Type": mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]),
-      "Content-Length": fs.statSync(imagePath).size.toString(),
-    });
+      imageStream.on("error", (err) => {
+        //console.error('Error reading file:', err);
+        res.status(404).end();
+      });
 
-    imageStream.on("error", (err) => {
-      //console.error('Error reading file:', err);
+      imageStream.pipe(res);
+    } else {
       res.status(404).end();
-    });
-
-    if(fs.existsSync(imagePath)) imageStream.pipe(res);
+    }
   }
 });
 
