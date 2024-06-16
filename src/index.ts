@@ -402,10 +402,7 @@ app.get("/uploads/raw/:img", async (req, res) => {
       res.status(404).end();
     });
 
-    imageStream.on("readable", () => {
-      imageStream.pipe(res);
-      // wacky ass megoldas de nem erdekel
-    })
+    if(fs.existsSync(imagePath)) imageStream.pipe(res);
   }
 });
 
