@@ -129,7 +129,7 @@ app.post("/api/users/upload", async (req, res) => {
   const filePath = await bunny.uploadFileStream(file);
   const fileLink = bunny.settings.cdn_url + filePath;
   addUpload(req.body.username, fileName, fileLink, deleteToken);
-  
+
   res.setHeader("Content-Type", "application/json").send(
     JSON.stringify({
       file_name: fileName,
@@ -384,8 +384,8 @@ app.get("/:img", async (req, res) => {
             `);
     }
 
-    const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
-    if (!fs.existsSync(imagePath)) return res.status(404).end();
+    //const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
+    //if (!fs.existsSync(imagePath)) return res.status(404).end();
 
     await res.render("imageViewer", {
       coverImg: uploadData['url'],
@@ -393,7 +393,7 @@ app.get("/:img", async (req, res) => {
       authorImg: userData["profilePicture"]
         ? `https://cdn.liba.lol/avatars/${userData["profilePicture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
-      date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
+      //date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
     });
