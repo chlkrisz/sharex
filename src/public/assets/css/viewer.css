@@ -64,6 +64,21 @@ h1 {
   background-size: contain;
 }
 
+.cover-image {
+  position: relative; 
+  overflow: hidden;
+}
+
+.cover-image img {
+  width: 100%; 
+  height: auto; 
+  display: block; 
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
 .picture {
   display: flex;
   flex-direction: row;
