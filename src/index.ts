@@ -15,7 +15,9 @@ import {
   invitedUserRegister,
   getUserDataByUpload,
   deleteUploadWithToken,
+  getUploadData,
 } from "./mongo";
+import * as bunny from './bunny';
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -121,9 +123,25 @@ app.post("/api/users/upload", async (req, res) => {
     (Math.random() + 1).toString(36).substring(2, 12) +
     "." +
     /(?:\.([^.]+))?$/.exec(file.name)![1];
-  const uploadPath = __dirname + "/../uploads/" + fileName;
+  //const uploadPath = __dirname + "/../uploads/" + fileName;
   const deleteToken = (Math.random() + 1).toString(36).substring(2, 52);
 
+  const filePath = await bunny.uploadFileStream(file);
+  const fileLink = bunny.settings.cdn_url + filePath;
+
+  res.setHeader("Content-Type", "application/json").send(
+    JSON.stringify({
+      file_name: fileName,
+      uploader: req.body.username,
+      delete_token: deleteToken,
+      host: req.headers.host,
+      protocol: req.protocol,
+      path: "/" + fileName,
+      raw_file_path: fileLink,
+    }),
+  );
+
+  /*
   file.mv(uploadPath, function (err) {
     if (err) {
       return res.status(500).send(err);
@@ -142,6 +160,7 @@ app.post("/api/users/upload", async (req, res) => {
       }),
     );
   });
+  */
 });
 
 app.post("/api/users/create", async (req, res) => {
@@ -328,6 +347,7 @@ app.get("/:img", async (req, res) => {
     return;
   } else {
     const userData = await getUserDataByUpload(req.params.img);
+    const uploadData = await getUploadData(req.params.img);
     if (!userData) return res.end();
     //const author = await getDisplayName(req.params.img);
     //console.log(req.headers["user-agent"]);
@@ -350,14 +370,14 @@ app.get("/:img", async (req, res) => {
                     <meta property="og:author" content="${userData["embed"]["title"]}">
                     <meta property="og:title" content="‎‎‎‎‎‎‎‎">
                     <meta name="theme-color" content="${userData["embed"]["color"]}">
-                    <meta property="og:image" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
+                    <meta property="og:image" content="${uploadData['url']}">
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="https://${req.headers.host}/uploads/raw/${req.params.img}">
+                    <meta name="twitter:image" content="${uploadData['url']}">
                     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-refresh">
                     <meta http-equiv="Pragma" content="no-cache">
                     <meta http-equiv="Expires" content="0">
-                    <meta http-equiv="refresh" content="0; url=https://${req.headers.host}/uploads/raw/${req.params.img}">
+                    <meta http-equiv="refresh" content="0; url=${uploadData['url']}">
                 </head>
             </html>
             `);
@@ -367,11 +387,10 @@ app.get("/:img", async (req, res) => {
     if (!fs.existsSync(imagePath)) return res.status(404).end();
 
     await res.render("imageViewer", {
-      coverImg:
-        "https://" + req.headers.host + "/uploads/raw/" + req.params.img,
+      coverImg: uploadData['url'],
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
-        ? `https://${req.headers.host}/${userData["profilePicture"]}`
+        ? `https://cdn.liba.lol/avatars/${userData["profilePicture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
       fileName: req.params.img,
@@ -381,10 +400,10 @@ app.get("/:img", async (req, res) => {
 });
 
 // Legacy
-app.get("/uploads/og/:img", (req, res) => {
+/*app.get("/uploads/og/:img", (req, res) => {
   res.redirect("../raw/" + req.params.img);
-});
-
+});*/
+/*
 app.get("/uploads/raw/:img", async (req, res) => {
   if (!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
     return res.status(403).end();
@@ -410,7 +429,7 @@ app.get("/uploads/raw/:img", async (req, res) => {
     }
   }
 });
-
+*/
 app.get("/api/delete", async (req, res) => {
   if (!req.query.token) return res.status(401).end();
 

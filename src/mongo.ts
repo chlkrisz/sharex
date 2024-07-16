@@ -60,6 +60,7 @@ export async function validateLogin(
 export async function addUpload(
   username: string,
   filename: string,
+  file_url: string,
   delete_token: string,
 ): Promise<boolean> {
   const Uploads = mongoose.model("uploads", uploadSchema);
@@ -67,6 +68,7 @@ export async function addUpload(
     _id: new mongoose.Types.ObjectId(),
     username: username,
     filename: filename,
+    file_url: file_url,
     delete_token: delete_token,
   });
 
@@ -195,6 +197,32 @@ export async function getUserDataByName(username: string): Promise<Object> {
     },
   };
 }
+
+export async function getUploadData(fileName: string): Promise<Object> {
+  const Uploads = mongoose.model("uploads", uploadSchema);
+  const upload = await Uploads.findOne({ filename: fileName });
+  if (!upload || !upload.filename)
+    return {
+      filename: "unknown",
+      url: "/uploads/unknown.png",
+      user: {
+        username: "unknown",
+        profilePicture: "/assets/img/placeholder.png",
+        displayName: "unknown",
+        verified: false,
+        embed: {
+          color: "#050505",
+          title: "Unknown Uploader",
+        },
+      },
+    };
+
+  return {
+    filename: upload.filename,
+    url: `${upload.file_url}`
+  };
+}
+
 /*
 export async function findDeletionToken(token: string): Promise<string> {
   const Uploads = mongoose.model("uploads", uploadSchema);
