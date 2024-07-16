@@ -389,7 +389,7 @@ app.get("/:img", async (req, res) => {
     //if (!fs.existsSync(imagePath)) return res.status(404).end();
     const expires = Math.round(Date.now() / 1000) + 3600;
 
-    const token = signUrl(uploadData.url, process.env.BUNNY_TAUTH_KEY);
+    const token = signUrl(uploadData.url, process.env.BUNNY_TAUTH_KEY||"");
 
     await res.setHeader("Content-Security-Policy", 
       "default-src 'self'; " +
@@ -401,7 +401,7 @@ app.get("/:img", async (req, res) => {
       coverImg: uploadData['url'] + `?token=${token}&expires=${expires}`,
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
-        ? `${signUrl(bunny.settings.cdn_url+"avatars/"+userData["profilePicture"], process.env.BUNNY_TAUTH_KEY)}`
+        ? `${signUrl(bunny.settings.cdn_url+"avatars/"+userData["profilePicture"], process.env.BUNNY_TAUTH_KEY||"")}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
@@ -410,7 +410,7 @@ app.get("/:img", async (req, res) => {
   }
 });
 
-function signUrl(url, securityKey, expirationTime = 3600, userIp = null, isDirectory = false) {
+function signUrl(url: string, securityKey: string, expirationTime: number = 3600, userIp: string = "", isDirectory: boolean = false) {
 	let parameterData = "", parameterDataUrl = "", signaturePath = "", hashableBase = "", token = "";
 	const expires = Math.round(Date.now() / 1000) + expirationTime;
 	const parsedUrl = new URL(url);
@@ -430,7 +430,7 @@ function signUrl(url, securityKey, expirationTime = 3600, userIp = null, isDirec
 			
 		});
 	}
-	hashableBase = securityKey + signaturePath + expires + ((userIp != null) ? userIp : "") + parameterData;
+	hashableBase = securityKey + signaturePath + expires + ((userIp != "") ? userIp : "") + parameterData;
 	token = Buffer.from(crypto.createHash("sha256").update(hashableBase).digest()).toString("base64");
 	token = token.replace(/\n/g, "").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 	if (isDirectory) {
