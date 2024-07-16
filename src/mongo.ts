@@ -198,7 +198,12 @@ export async function getUserDataByName(username: string): Promise<Object> {
   };
 }
 
-export async function getUploadData(fileName: string): Promise<Object> {
+export interface UploadData {
+  filename: string;
+  url: string;
+}
+
+export async function getUploadData(fileName: string): Promise<UploadData> {
   const Uploads = mongoose.model("uploads", uploadSchema);
   const upload = await Uploads.findOne({ filename: fileName });
   if (!upload || !upload.filename)
