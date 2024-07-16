@@ -411,9 +411,10 @@ app.get("/:img", async (req, res) => {
 
 function generateToken(path: string) {
   const expires = Math.round(Date.now() / 1000) + 3600;
-
-  // ne kérdezd, így van bunny.net dokumentációban, és nem merek hozzányúlni
-  return new Buffer(crypto.createHash('md5').update(process.env.BUNNY_TAUTH_KEY+path+expires).digest("binary")).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
+  const data = process.env.BUNNY_TAUTH_KEY + path + expires;
+  const hash = crypto.createHash("sha256").update(data).digest("binary");
+  const base64enc = Buffer.from(hash, 'binary').toString("base64");
+  return base64enc;
 }
 
 // Legacy
