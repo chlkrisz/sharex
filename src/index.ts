@@ -30,6 +30,7 @@ import mime from "mime";
 import axios from "axios";
 import fastFolderSize from "fast-folder-size";
 import crypto from "crypto";
+import queryString from 'querystring';
 
 const port = process.env.PORT || 3000;
 
@@ -388,7 +389,7 @@ app.get("/:img", async (req, res) => {
     //if (!fs.existsSync(imagePath)) return res.status(404).end();
     const expires = Math.round(Date.now() / 1000) + 3600;
 
-    const token = generateToken("/"+uploadData.path);
+    const token = signUrl(uploadData.url, process.env.BUNNY_TAUTH_KEY);
 
     await res.setHeader("Content-Security-Policy", 
       "default-src 'self'; " +
@@ -400,7 +401,7 @@ app.get("/:img", async (req, res) => {
       coverImg: uploadData['url'] + `?token=${token}&expires=${expires}`,
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
-        ? `${bunny.settings.cdn_url}avatars/${userData["profilePicture"]}?token=${generateToken("/avatars/"+userData["profilePicture"])}&expires=${expires}`
+        ? `${signUrl(bunny.settings.cdn_url+"avatars/"+userData["profilePicture"], process.env.BUNNY_TAUTH_KEY)}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
@@ -409,12 +410,34 @@ app.get("/:img", async (req, res) => {
   }
 });
 
-function generateToken(path: string) {
-  const expires = Math.round(Date.now() / 1000) + 3600;
-  const data = process.env.BUNNY_TAUTH_KEY + path + expires;
-  const hash = crypto.createHash("sha256").update(data).digest("binary");
-  const base64enc = Buffer.from(hash, 'binary').toString("base64");
-  return base64enc.replace(/\+/g, "-").replace(/[\-\/]/g,"_").replace(/=/g,".");
+function signUrl(url, securityKey, expirationTime = 3600, userIp = null, isDirectory = false) {
+	let parameterData = "", parameterDataUrl = "", signaturePath = "", hashableBase = "", token = "";
+	const expires = Math.round(Date.now() / 1000) + expirationTime;
+	const parsedUrl = new URL(url);
+	const parameters = (new URL(url)).searchParams;
+	signaturePath = decodeURIComponent(parsedUrl.pathname);
+	parameters.sort();
+	if (Array.from(parameters).length > 0) {
+		parameters.forEach(function(value, key) {
+			if (value == "") {
+				return;
+			}
+			if (parameterData.length > 0) {
+				parameterData += "&";
+			}
+			parameterData += key + "=" + value;
+			parameterDataUrl += "&" + key + "=" + queryString.escape(value);
+			
+		});
+	}
+	hashableBase = securityKey + signaturePath + expires + ((userIp != null) ? userIp : "") + parameterData;
+	token = Buffer.from(crypto.createHash("sha256").update(hashableBase).digest()).toString("base64");
+	token = token.replace(/\n/g, "").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+	if (isDirectory) {
+		return parsedUrl.protocol+ "//" + parsedUrl.host + "/bcdn_token=" + token + parameterDataUrl + "&expires=" + expires + parsedUrl.pathname;
+	} else {
+		return parsedUrl.protocol + "//" + parsedUrl.host + parsedUrl.pathname + "?token=" + token + parameterDataUrl + "&expires=" + expires;
+	}
 }
 
 // Legacy
