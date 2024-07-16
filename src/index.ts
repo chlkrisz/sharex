@@ -128,7 +128,8 @@ app.post("/api/users/upload", async (req, res) => {
 
   const filePath = await bunny.uploadFileStream(file);
   const fileLink = bunny.settings.cdn_url + filePath;
-
+  addUpload(req.body.username, fileName, fileLink, deleteToken);
+  
   res.setHeader("Content-Type", "application/json").send(
     JSON.stringify({
       file_name: fileName,
