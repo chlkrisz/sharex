@@ -387,20 +387,22 @@ app.get("/:img", async (req, res) => {
     //const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
     //if (!fs.existsSync(imagePath)) return res.status(404).end();
 
-    await res.setHeader("Content-Security-Policy", `default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com;
-      style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com;
-      img-src 'self' ${bunny.settings.cdn_url} data:;
-      font-src 'self' https://fonts.gstatic.com https://unpkg.com;`).render("imageViewer", {
+    await res.setHeader("Content-Security-Policy", 
+      "default-src 'self'; " +
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
+      "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; " +
+      `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
+      "font-src 'self' https://fonts.gstatic.com https://unpkg.com;"
+    ).render("imageViewer", {
       coverImg: uploadData['url'],
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
         ? `${bunny.settings.cdn_url}/avatars/${userData["profilePicture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
-      //date: new Date(fs.statSync(imagePath).birthtime).toLocaleDateString(),
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
     });
+    
   }
 });
 
