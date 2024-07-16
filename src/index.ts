@@ -387,9 +387,7 @@ app.get("/:img", async (req, res) => {
 
     //const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
     //if (!fs.existsSync(imagePath)) return res.status(404).end();
-    const expires = Math.round(Date.now() / 1000) + 3600;
 
-    const token = signUrl(uploadData.url, process.env.BUNNY_TAUTH_KEY||"");
 
     await res.setHeader("Content-Security-Policy", 
       "default-src 'self'; " +
@@ -398,7 +396,7 @@ app.get("/:img", async (req, res) => {
       `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
       "font-src 'self' https://fonts.gstatic.com https://unpkg.com;"
     ).render("imageViewer", {
-      coverImg: uploadData['url'] + `?token=${token}&expires=${expires}`,
+      coverImg: signUrl(uploadData.url, process.env.BUNNY_TAUTH_KEY||""),
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
         ? `${signUrl(bunny.settings.cdn_url+"avatars/"+userData["profilePicture"], process.env.BUNNY_TAUTH_KEY||"")}`
