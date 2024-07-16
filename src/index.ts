@@ -397,7 +397,7 @@ app.get("/:img", async (req, res) => {
       coverImg: uploadData['url'],
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
-        ? `${bunny.settings.cdn_url}/avatars/${userData["profilePicture"]}`
+        ? `${bunny.settings.cdn_url}avatars/${userData["profilePicture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
