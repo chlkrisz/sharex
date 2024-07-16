@@ -203,23 +203,13 @@ export async function getUploadData(fileName: string): Promise<Object> {
   const upload = await Uploads.findOne({ filename: fileName });
   if (!upload || !upload.filename)
     return {
-      filename: "unknown",
-      url: "/uploads/unknown.png",
-      user: {
-        username: "unknown",
-        profilePicture: "/assets/img/placeholder.png",
-        displayName: "unknown",
-        verified: false,
-        embed: {
-          color: "#050505",
-          title: "Unknown Uploader",
-        },
-      },
+      'filename': "unknown",
+      'url': "https://cdn.liba.lol/395692119_1365213177412972_2538873250612002343_n.jpg",
     };
 
   return {
-    filename: upload.filename,
-    url: `${upload.file_url}`
+    'filename': upload.filename,
+    'url': `${upload.file_url}`
   };
 }
 
