@@ -414,7 +414,7 @@ function generateToken(path: string) {
   const data = process.env.BUNNY_TAUTH_KEY + path + expires;
   const hash = crypto.createHash("sha256").update(data).digest("binary");
   const base64enc = Buffer.from(hash, 'binary').toString("base64");
-  return base64enc;
+  return base64enc.replace(/\+/g, "-").replace(/[\-\/]/g,"_").replace(/=/g,".");
 }
 
 // Legacy
