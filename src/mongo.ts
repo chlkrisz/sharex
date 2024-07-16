@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 const saltRounds: number = 10;
 import path from "path";
 import * as fs from "fs";
+import * as bunny from "./bunny";
 
 const mongoUrl: string = process.env.MONGO_URL!;
 mongoose.connect(mongoUrl);
@@ -200,6 +201,7 @@ export async function getUserDataByName(username: string): Promise<Object> {
 
 export interface UploadData {
   filename: string;
+  path: string;
   url: string;
 }
 
@@ -209,11 +211,13 @@ export async function getUploadData(fileName: string): Promise<UploadData> {
   if (!upload || !upload.filename)
     return {
       'filename': "unknown",
+      'path': '/395692119_1365213177412972_2538873250612002343_n.jpg',
       'url': "https://cdn.liba.lol/395692119_1365213177412972_2538873250612002343_n.jpg",
     };
 
   return {
     'filename': upload.filename,
+    'path': `${upload.file_url!.split(bunny.settings.cdn_url!)[1]}`,
     'url': `${upload.file_url}`
   };
 }

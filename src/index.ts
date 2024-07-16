@@ -386,6 +386,9 @@ app.get("/:img", async (req, res) => {
 
     //const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
     //if (!fs.existsSync(imagePath)) return res.status(404).end();
+    const expires = Math.round(Date.now() / 1000) + 3600;
+
+    const token = generateToken("/"+uploadData.path);
 
     await res.setHeader("Content-Security-Policy", 
       "default-src 'self'; " +
@@ -394,10 +397,10 @@ app.get("/:img", async (req, res) => {
       `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
       "font-src 'self' https://fonts.gstatic.com https://unpkg.com;"
     ).render("imageViewer", {
-      coverImg: uploadData['url'],
+      coverImg: uploadData['url'] + `?token=${token}&expires=${expires}`,
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
-        ? `${bunny.settings.cdn_url}avatars/${userData["profilePicture"]}`
+        ? `${bunny.settings.cdn_url}avatars/${userData["profilePicture"]}?token=${generateToken("/avatars/"+userData["profilePicture"])}&expires=${expires}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
@@ -405,6 +408,13 @@ app.get("/:img", async (req, res) => {
     
   }
 });
+
+function generateToken(path: string) {
+  const expires = Math.round(Date.now() / 1000) + 3600;
+
+  // ne kérdezd, így van bunny.net dokumentációban, és nem merek hozzányúlni
+  return new Buffer(crypto.createHash('md5').update(process.env.BUNNY_TAUTH_KEY+path+expires).digest("binary")).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
+}
 
 // Legacy
 /*app.get("/uploads/og/:img", (req, res) => {
