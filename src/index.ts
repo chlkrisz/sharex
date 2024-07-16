@@ -365,7 +365,7 @@ app.get("/:img", async (req, res) => {
       req.headers["user-agent"] &&
       botUserAgents.includes(req.headers["user-agent"])
     ) {
-      return res.send(`
+      return res.setHeader("Cache-Control", "max-age=3600, must-revalidate").send(`
             <!doctype html>
             <html>
                 <head>
