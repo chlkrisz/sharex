@@ -2,10 +2,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src * https://cdn.liba.lol;
-    script-src * 'unsafe-eval' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' https://cdn.liba.lol data:">
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com;  
+      style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com;
+      img-src 'self' https://cdn.liba.lol data:;
+    ">
     <title>{{fileName}} by {{author}}</title>
     <link rel="stylesheet" href="assets/css/viewer.css" />
     <link
