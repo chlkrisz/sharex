@@ -33,6 +33,7 @@ import crypto from "crypto";
 import queryString from 'querystring';
 
 const port = process.env.PORT || 3000;
+const signUrls: boolean = false;
 
 const app = express();
 
@@ -372,14 +373,14 @@ app.get("/:img", async (req, res) => {
                     <meta property="og:author" content="${userData["embed"]["title"]}">
                     <meta property="og:title" content="‎‎‎‎‎‎‎‎">
                     <meta name="theme-color" content="${userData["embed"]["color"]}">
-                    <meta property="og:image" content="${signUrl(uploadData['url'], process.env.BUNNY_TAUTH_KEY||"")}">
+                    <meta property="og:image" content="${signUrls?signUrl(uploadData['url'], process.env.BUNNY_TAUTH_KEY||""):uploadData['url']}">
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="${signUrl(uploadData['url'], process.env.BUNNY_TAUTH_KEY||"")}">
+                    <meta name="twitter:image" content="${signUrls?signUrl(uploadData['url'], process.env.BUNNY_TAUTH_KEY||""):uploadData['url']}}">
                     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-refresh">
                     <meta http-equiv="Pragma" content="no-cache">
                     <meta http-equiv="Expires" content="0">
-                    <meta http-equiv="refresh" content="0; url=${signUrl(uploadData['url'], process.env.BUNNY_TAUTH_KEY||"")}">
+                    <meta http-equiv="refresh" content="0; url=${signUrls?signUrl(uploadData['url'], process.env.BUNNY_TAUTH_KEY||""):uploadData['url']}}">
                 </head>
             </html>
             `);
@@ -396,10 +397,10 @@ app.get("/:img", async (req, res) => {
       `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
       "font-src 'self' https://fonts.gstatic.com https://unpkg.com;"
     ).render("imageViewer", {
-      coverImg: signUrl(uploadData.url, process.env.BUNNY_TAUTH_KEY||""),
+      coverImg: signUrls?signUrl(uploadData['url'], process.env.BUNNY_TAUTH_KEY||""):uploadData['url'],
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
-        ? `${signUrl(bunny.settings.cdn_url+"avatars/"+userData["profilePicture"], process.env.BUNNY_TAUTH_KEY||"")}`
+        ? `${signUrls?signUrl(bunny.settings.cdn_url+"avatars/"+userData["profilePicture"], process.env.BUNNY_TAUTH_KEY||""):bunny.settings.cdn_url+"avatars/"+userData["profilePicture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
