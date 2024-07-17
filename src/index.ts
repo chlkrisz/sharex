@@ -376,11 +376,11 @@ app.get("/:img", async (req, res) => {
                     <meta property="og:image" content="${uploadData['url']}">
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="${uploadData['url']}}">
+                    <meta name="twitter:image" content="${uploadData['url']}">
                     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-refresh">
                     <meta http-equiv="Pragma" content="no-cache">
                     <meta http-equiv="Expires" content="0">
-                    <meta http-equiv="refresh" content="0; url=${uploadData['url']}}">
+                    <meta http-equiv="refresh" content="0; url=${uploadData['url']}">
                 </head>
             </html>
             `);
