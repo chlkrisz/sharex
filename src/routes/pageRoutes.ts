@@ -81,7 +81,7 @@ router.get("/:img", async (req, res) => {
     "Content-Security-Policy",
     "default-src 'self'; " +
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
-      "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com https://sx.liba.lol; " +
+      "style-src 'self' 'unsafe-inline' *; " +
       `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
       "font-src 'self' https://fonts.gstatic.com https://unpkg.com;"
   ).render("imageViewer", {
