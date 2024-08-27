@@ -94,6 +94,7 @@ router.get("/:img", async (req, res) => {
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,
+      timestamp: ~~(Date.now() / 1000)
     });
 });
 
