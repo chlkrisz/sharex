@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import "dotenv/config";
-import { userSchema } from "./schemas/user";
-import { uploadSchema } from "./schemas/upload";
-import { inviteSchema } from "./schemas/invite";
+import { userSchema } from "../schemas/user";
+import { uploadSchema } from "../schemas/upload";
+import { inviteSchema } from "../schemas/invite";
 import bcrypt from "bcrypt";
 const saltRounds: number = 10;
 import path from "path";
 import * as fs from "fs";
-import * as bunny from "./utils/bunny";
+import * as bunny from "../utils/bunny";
 
 const mongoUrl: string = process.env.MONGO_URL!;
 mongoose.connect(mongoUrl);
