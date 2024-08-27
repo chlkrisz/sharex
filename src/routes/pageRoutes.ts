@@ -86,7 +86,6 @@ router.get("/:img", async (req, res) => {
         `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
         "font-src 'self' https://fonts.gstatic.com https://unpkg.com;",
     )
-    .setHeader("Cross-Origin-Resource-Policy", "cross-origin")
     .render("imageViewer", {
       coverImg: uploadData["url"],
       author: userData["displayName"] || userData["username"],
