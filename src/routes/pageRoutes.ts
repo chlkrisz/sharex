@@ -65,7 +65,7 @@ router.get("/:img", async (req, res) => {
             <meta property="og:title" content="‎‎‎‎‎‎‎‎">
             <meta name="theme-color" content="${userData["embed"]["color"]}">
             <meta property="og:image" content="${uploadData["url"]}">
-            <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}" />
+            <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}&t=${~~Date.now()/1000}" />
             <meta name="twitter:card" content="summary_large_image">
             <meta name="twitter:image" content="${uploadData["url"]}">
             <meta http-equiv="Cache-Control" content="no-cache, no-store, must-refresh">
