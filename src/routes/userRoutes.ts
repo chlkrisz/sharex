@@ -27,7 +27,7 @@ router.get("/oembed", async (req, res) => {
       provider_name: req.query.author,
       provider_url: "https://" + req.headers.host,
       author: req.query.author,
-      title: "​",
+      title: "",
       url: "https://" + req.headers.host + "/uploads/" + req.query.file,
       thumbnail_url:
         "https://" + req.headers.host + "/uploads/og/" + req.query.file,
