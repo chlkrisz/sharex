@@ -6,14 +6,14 @@ import fastFolderSize from "fast-folder-size";
 const router = Router();
 
 router.get("/counter", async (req, res) => {
-    const counter = await mongo.countUploads();
-    fastFolderSize("./uploads", (err, size) => {
-      if (err) console.error(err);
-      res.status(200).json({
-        count: counter,
-        size: size,
-      });
+  const counter = await mongo.countUploads();
+  fastFolderSize("./uploads", (err, size) => {
+    if (err) console.error(err);
+    res.status(200).json({
+      count: counter,
+      size: size,
     });
+  });
 });
 
 router.post("/users/login", async (req, res) => {
@@ -30,14 +30,16 @@ router.post("/users/login", async (req, res) => {
 router.post("/users/create", async (req, res) => {
   const { username, password } = req.body;
   const authorization = req.headers.authorization;
-  if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
+  if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID)
+    return res.status(401).end("Unauthorized");
   const created: boolean = (await mongo.addUser(username, password)) || false;
   res.status(created === true ? 200 : 500).end(created.toString());
 });
 
 router.post("/users/genInvite", async (req, res) => {
   const authorization = req.headers.authorization;
-  if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
+  if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID)
+    return res.status(401).end("Unauthorized");
   const inviteCode: string = await mongo.generateInviteCode();
   if (!inviteCode) return res.json({ success: false });
   res.json({ success: true, code: inviteCode });
@@ -45,34 +47,45 @@ router.post("/users/genInvite", async (req, res) => {
 
 router.post("/users/register", async (req, res) => {
   const { inviteCode, username, domain, embedTitle, embedColor } = req.body;
-  let { displayName } = req.body; 
+  let { displayName } = req.body;
   if (!inviteCode || !username) {
     return res.status(400).json({ success: false, error: "Bad Request" });
   }
   if (username.length < 3) {
-    return res.status(400).json({ success: false, error: "The provided username is too short!" });
+    return res
+      .status(400)
+      .json({ success: false, error: "The provided username is too short!" });
   }
   if (!displayName) displayName = username;
   const password = generatePassword();
   const success: boolean = await mongo.invitedUserRegister(
-    inviteCode, username, password, embedColor || "#050505",
-    embedTitle || displayName || username, displayName || username
+    inviteCode,
+    username,
+    password,
+    embedColor || "#050505",
+    embedTitle || displayName || username,
+    displayName || username,
   );
-  if (!success) return res.status(500).json({ success: false, error: "Unknown error, please try again." });
+  if (!success)
+    return res
+      .status(500)
+      .json({ success: false, error: "Unknown error, please try again." });
 
-  const fileData = Buffer.from(JSON.stringify({
-    Version: "16.0.1",
-    Name: `liba sharex - ${username}`,
-    DestinationType: "ImageUploader, FileUploader",
-    RequestMethod: "POST",
-    RequestURL: `https://${domain}/api/users/upload`,
-    Body: "MultipartFormData",
-    Arguments: { username: `${username}`, password: `${password}` },
-    FileFormName: "file",
-    URL: "https://{json:host}{json:path}",
-    ThumbnailURL: "https://{json:host}/uploads/og/{json:file_name}",
-    DeletionURL: "https://{json:host}/api/delete?token={json:delete_token}",
-  })).toString("base64");
+  const fileData = Buffer.from(
+    JSON.stringify({
+      Version: "16.0.1",
+      Name: `liba sharex - ${username}`,
+      DestinationType: "ImageUploader, FileUploader",
+      RequestMethod: "POST",
+      RequestURL: `https://${domain}/api/users/upload`,
+      Body: "MultipartFormData",
+      Arguments: { username: `${username}`, password: `${password}` },
+      FileFormName: "file",
+      URL: "https://{json:host}{json:path}",
+      ThumbnailURL: "https://{json:host}/uploads/og/{json:file_name}",
+      DeletionURL: "https://{json:host}/api/delete?token={json:delete_token}",
+    }),
+  ).toString("base64");
 
   res.writeHead(200, {
     "Content-Disposition": `attachment; filename="${username}.sxcu"`,
@@ -85,7 +98,8 @@ router.post("/users/register", async (req, res) => {
 router.post("/users/changePassword", async (req, res) => {
   const { username, newPassword } = req.body;
   const authorization = req.headers.authorization;
-  if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
+  if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID)
+    return res.status(401).end("Unauthorized");
   const changed: boolean = await mongo.setPassword(username, newPassword);
   res.status(changed === true ? 200 : 500).end(changed.toString());
 });

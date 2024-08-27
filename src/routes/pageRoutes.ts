@@ -77,22 +77,25 @@ router.get("/:img", async (req, res) => {
       `);
   }
 
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
-      "style-src 'self' 'unsafe-inline' *; " +
-      `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
-      "font-src 'self' https://fonts.gstatic.com https://unpkg.com;"
-  ).render("imageViewer", {
-    coverImg: uploadData["url"],
-    author: userData["displayName"] || userData["username"],
-    authorImg: userData["profilePicture"]
-      ? `${bunny.settings.cdn_url + "avatars/" + userData["profilePicture"]}`
-      : `https://${req.headers.host}/assets/img/placeholder.png`,
-    fileName: req.params.img,
-    verified: (await userData["verified"]) ? `block` : `none`,
-  });
+  res
+    .setHeader(
+      "Content-Security-Policy",
+      "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
+        "style-src 'self' 'unsafe-inline' *; " +
+        `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
+        "font-src 'self' https://fonts.gstatic.com https://unpkg.com;",
+    )
+    .setHeader("Cross-Origin-Resource-Policy", "cross-origin")
+    .render("imageViewer", {
+      coverImg: uploadData["url"],
+      author: userData["displayName"] || userData["username"],
+      authorImg: userData["profilePicture"]
+        ? `${bunny.settings.cdn_url + "avatars/" + userData["profilePicture"]}`
+        : `https://${req.headers.host}/assets/img/placeholder.png`,
+      fileName: req.params.img,
+      verified: (await userData["verified"]) ? `block` : `none`,
+    });
 });
 
 export default router;

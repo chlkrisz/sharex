@@ -1,49 +1,24 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{errorCode}}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-        
-        html, body {
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: rgba(17, 10, 16, 0.85);
-            font-family: 'Montserrat', sans-serif;
-            color: #fff
-        }
-
-        .container {
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            height: 100%;
-            opacity: 0.7;
-        }
-
-        h1 {
-            font-size: 20vw;
-            margin: 0;
-            letter-spacing: -17px;
-        }
-
-        p {
-            font-weight: bold;
-            margin: 0;
-        }
+      @import
+      url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+      html, body { padding: 0; margin: 0; width: 100%; height: 100%; overflow:
+      hidden; background-color: rgba(17, 10, 16, 0.85); font-family:
+      'Montserrat', sans-serif; color: #fff } .container { text-align: center;
+      display: flex; justify-content: center; align-items: center;
+      flex-direction: column; height: 100%; opacity: 0.7; } h1 { font-size:
+      20vw; margin: 0; letter-spacing: -17px; } p { font-weight: bold; margin:
+      0; }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>{{errorCode}}</h1>
-        <p>{{errorDescription}}</p>
+      <h1>{{errorCode}}</h1>
+      <p>{{errorDescription}}</p>
     </div>
-</body>
+  </body>
 </html>

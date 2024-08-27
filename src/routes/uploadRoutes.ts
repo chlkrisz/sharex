@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { validateLogin, addUpload, deleteUploadWithToken } from "../utils/mongo";
+import {
+  validateLogin,
+  addUpload,
+  deleteUploadWithToken,
+} from "../utils/mongo";
 import * as bunny from "../utils/bunny";
 
 const router = Router();
@@ -14,7 +18,8 @@ router.post("/users/upload", async (req, res) => {
 
   const file = req.files.file;
 
-  if (Array.isArray(file)) return res.status(400).send("Only one file at a time is allowed.");
+  if (Array.isArray(file))
+    return res.status(400).send("Only one file at a time is allowed.");
 
   const fileName =
     (Math.random() + 1).toString(36).substring(2, 12) +
@@ -35,7 +40,7 @@ router.post("/users/upload", async (req, res) => {
       protocol: req.protocol,
       path: "/" + fileName,
       raw_file_path: fileLink,
-    })
+    }),
   );
 });
 
@@ -49,7 +54,11 @@ router.get("/api/delete", async (req, res) => {
   if (deleted) {
     res.status(200).end("File deleted successfully!");
   } else {
-    res.status(500).end("There was an error deleting the uploaded file. Did you provide the correct token?");
+    res
+      .status(500)
+      .end(
+        "There was an error deleting the uploaded file. Did you provide the correct token?",
+      );
   }
 });
 

@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
-  })
+  }),
 );
 
 app.use("/", express.static("src/public"));

@@ -8,11 +8,12 @@ export const getDiscordProfilePicture = async (id: string) => {
       headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN || ""}` },
     });
     let json = response.data;
-    if (!json.avatar) throw new Error("The Discord user doesn't have a profile picture set!");
+    if (!json.avatar)
+      throw new Error("The Discord user doesn't have a profile picture set!");
 
     const image = await axios.get(
       `https://cdn.discordapp.com/avatars/${id}/${json.avatar}.png?size=1024`,
-      { responseType: "stream" }
+      { responseType: "stream" },
     );
 
     return image.data;
