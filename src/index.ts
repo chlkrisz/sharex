@@ -27,7 +27,7 @@ app.use(
 );
 
 app.use("/", (req,res,next)=>{
-  express.static(path.join(__dirname, "src/public"))(req,res,next);
+  express.static("src/public")(req,res,next);
 });
 app.set("view engine", "hbs");
 
