@@ -3,14 +3,7 @@ import {
   validateLogin,
   addUpload,
   countUploads,
-  //getDisplayName,
-  //getUsername,
-  //findDeletionToken,
-  //deleteUpload,
-  //setDisplayName,
   setPassword,
-  //getVerifiedStatus,
-  //getProfilePicture,
   generateInviteCode,
   invitedUserRegister,
   getUserDataByUpload,
@@ -125,7 +118,6 @@ app.post("/api/users/upload", async (req, res) => {
     (Math.random() + 1).toString(36).substring(2, 12) +
     "." +
     /(?:\.([^.]+))?$/.exec(file.name)![1];
-  //const uploadPath = __dirname + "/../uploads/" + fileName;
   const deleteToken = (Math.random() + 1).toString(36).substring(2, 52);
 
   const filePath = await bunny.uploadFileStream(file);
@@ -143,27 +135,6 @@ app.post("/api/users/upload", async (req, res) => {
       raw_file_path: fileLink,
     }),
   );
-
-  /*
-  file.mv(uploadPath, function (err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-
-    addUpload(req.body.username, fileName, deleteToken);
-    res.setHeader("Content-type", "application/json").send(
-      JSON.stringify({
-        file_name: fileName,
-        uploader: req.body.username,
-        delete_token: deleteToken,
-        host: req.headers.host,
-        protocol: req.protocol,
-        path: "/" + fileName,
-        raw_file_path: "/uploads/raw/" + fileName,
-      }),
-    );
-  });
-  */
 });
 
 app.post("/api/users/create", async (req, res) => {
@@ -260,8 +231,6 @@ app.post("/api/users/register", async (req, res) => {
       }),
     ).toString("base64");
   
-    //most így utólag belegondolva ennek az oda-vissza konverziónak nem túl sok értelme van, de őszintén már nem érdekel annyira hogy legyen türelmem másképp megoldani
-  
     res.writeHead(200, {
       "Content-Disposition": `attachment; filename="${username}.sxcu"`,
       "Content-Type": "text/plain",
@@ -311,19 +280,6 @@ app.get("/api/discord-profile-picture", async (req, res) => {
       return;
     });
 });
-
-/*
-app.post("/api/users/changeDisplayName", async (req, res) => {
-  const { username, displayName } = req.body;
-  const authorization = req.headers.authorization;
-  if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID)
-    return res.status(401).end("Unauthorized");
-  if (displayName.length > 257)
-    return res.status(400).end("Display name is too long!");
-  const changed: boolean = await setDisplayName(username, displayName);
-  await res.status(changed === true ? 200 : 500).end(changed.toString());
-});
-*/
 
 app.post("/api/users/changePassword", async (req, res) => {
   const { username, newPassword } = req.body;
@@ -386,10 +342,6 @@ app.get("/:img", async (req, res) => {
             `);
     }
 
-    //const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
-    //if (!fs.existsSync(imagePath)) return res.status(404).end();
-
-
     await res.setHeader("Content-Security-Policy", 
       "default-src 'self'; " +
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
@@ -439,48 +391,10 @@ function signUrl(url: string, securityKey: string, expirationTime: number = 3600
 	}
 }
 
-// Legacy
-/*app.get("/uploads/og/:img", (req, res) => {
-  res.redirect("../raw/" + req.params.img);
-});*/
-/*
-app.get("/uploads/raw/:img", async (req, res) => {
-  if (!/.(jpg|jpeg|png|gif|bmp|svg|mp4)$/.test(req.params.img)) {
-    return res.status(403).end();
-  } else {
-    const imagePath = path.join(__dirname, "/../uploads/", req.params.img);
-    
-    if(fs.existsSync(imagePath)){
-      const imageStream = fs.createReadStream(imagePath);
-      
-      res.set({
-        "Content-Type": mime.lookup(/(?:\.([^.]+))?$/.exec(req.params.img)![1]),
-        "Content-Length": fs.statSync(imagePath).size.toString(),
-      });
-
-      imageStream.on("error", (err) => {
-        //console.error('Error reading file:', err);
-        res.status(404).end();
-      });
-
-      imageStream.pipe(res);
-    } else {
-      res.status(404).end();
-    }
-  }
-});
-*/
 app.get("/api/delete", async (req, res) => {
   if (!req.query.token) return res.status(401).end();
 
   const token = req.query.token as string;
-  /*
-  const file = await findDeletionToken(token);
-
-  if (!file) return res.status(403).end();
-
-  const deleted = await deleteUpload(file);
-  */
 
   const deleted = await deleteUploadWithToken(token);
 
