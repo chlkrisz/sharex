@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import helmet from "helmet";
 import fileUpload from "express-fileupload";
 import bodyParser from "body-parser";
@@ -25,7 +26,10 @@ app.use(
   }),
 );
 
-app.use("/", express.static("src/public"));
+app.use("/", (req,res,next)=>{
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  express.static(path.join(__dirname, "src/public"))(req,res,next);
+});
 app.set("view engine", "hbs");
 
 app.use("/api", userRoutes);
