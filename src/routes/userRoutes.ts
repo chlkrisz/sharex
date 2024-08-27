@@ -1,12 +1,24 @@
 import { Router } from "express";
-import { addUser, validateLogin, setPassword, generateInviteCode, invitedUserRegister } from "../utils/mongo";
+import * as mongo from "../utils/mongo";
 import { generatePassword } from "../utils/helpers";
+import fastFolderSize from "fast-folder-size";
 
 const router = Router();
 
+router.get("/counter", async (req, res) => {
+    const counter = await mongo.countUploads();
+    fastFolderSize("./uploads", (err, size) => {
+      if (err) console.error(err);
+      res.status(200).json({
+        count: counter,
+        size: size,
+      });
+    });
+});
+
 router.post("/users/login", async (req, res) => {
   const { username, password } = req.body;
-  const validLogin: boolean = await validateLogin(username, password);
+  const validLogin: boolean = await mongo.validateLogin(username, password);
 
   if (validLogin) {
     res.status(200).end();
@@ -19,14 +31,14 @@ router.post("/users/create", async (req, res) => {
   const { username, password } = req.body;
   const authorization = req.headers.authorization;
   if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
-  const created: boolean = (await addUser(username, password)) || false;
+  const created: boolean = (await mongo.addUser(username, password)) || false;
   res.status(created === true ? 200 : 500).end(created.toString());
 });
 
 router.post("/users/genInvite", async (req, res) => {
   const authorization = req.headers.authorization;
   if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
-  const inviteCode: string = await generateInviteCode();
+  const inviteCode: string = await mongo.generateInviteCode();
   if (!inviteCode) return res.json({ success: false });
   res.json({ success: true, code: inviteCode });
 });
@@ -42,7 +54,7 @@ router.post("/users/register", async (req, res) => {
   }
   if (!displayName) displayName = username;
   const password = generatePassword();
-  const success: boolean = await invitedUserRegister(
+  const success: boolean = await mongo.invitedUserRegister(
     inviteCode, username, password, embedColor || "#050505",
     embedTitle || displayName || username, displayName || username
   );
@@ -74,7 +86,7 @@ router.post("/users/changePassword", async (req, res) => {
   const { username, newPassword } = req.body;
   const authorization = req.headers.authorization;
   if (authorization !== "Bearer " + process.env.SUPERADMIN_UUID) return res.status(401).end("Unauthorized");
-  const changed: boolean = await setPassword(username, newPassword);
+  const changed: boolean = await mongo.setPassword(username, newPassword);
   res.status(changed === true ? 200 : 500).end(changed.toString());
 });
 
