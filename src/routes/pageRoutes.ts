@@ -6,11 +6,11 @@ import * as bunny from "../utils/bunny";
 const router = Router();
 
 router.get("/register", (_, res) => {
-  res.sendFile(path.join(__dirname, "/public/register.html"));
+  res.sendFile(path.join(__dirname, "../public/register.html"));
 });
 
 router.get("/terms", (_, res) => {
-  res.sendFile(path.join(__dirname, "/public/terms.html"));
+  res.sendFile(path.join(__dirname, "../public/terms.html"));
 });
 
 router.get("/tos", (_, res) => {
@@ -22,7 +22,7 @@ router.get("/terms-of-service", (_, res) => {
 });
 
 router.get("/thanks", (_, res) => {
-  res.sendFile(path.join(__dirname, "/public/thanks.html"));
+  res.sendFile(path.join(__dirname, "../public/thanks.html"));
 });
 
 router.get("/uploads", (_, res) => {
