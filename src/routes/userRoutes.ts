@@ -16,7 +16,7 @@ router.get("/counter", async (req, res) => {
   });
 });
 
-router.get("/api/oembed", async (req, res) => {
+router.get("/oembed", async (req, res) => {
     if (!req.query.file || !req.query.author) {
       return res.status(400).end();
     }
