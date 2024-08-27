@@ -16,6 +16,23 @@ router.get("/counter", async (req, res) => {
   });
 });
 
+router.get("/api/oembed", async (req, res) => {
+    if (!req.query.file || !req.query.author) {
+      return res.status(400).end();
+    }
+  
+    return res.json({
+      type: "rich",
+      version: "1.0",
+      provider_name: req.query.author,
+      provider_url: "https://" + req.headers.host,
+      author: req.query.author,
+      url: "https://" + req.headers.host + "/uploads/" + req.query.file,
+      thumbnail_url:
+        "https://" + req.headers.host + "/uploads/og/" + req.query.file,
+    });
+});
+
 router.post("/users/login", async (req, res) => {
   const { username, password } = req.body;
   const validLogin: boolean = await mongo.validateLogin(username, password);
