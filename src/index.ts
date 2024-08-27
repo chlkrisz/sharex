@@ -27,7 +27,6 @@ app.use(
 );
 
 app.use("/", (req,res,next)=>{
-  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   express.static(path.join(__dirname, "src/public"))(req,res,next);
 });
 app.set("view engine", "hbs");
