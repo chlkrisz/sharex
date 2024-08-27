@@ -10,7 +10,7 @@ import {
   deleteUploadWithToken,
   getUploadData,
 } from "./mongo";
-import * as bunny from './bunny';
+import * as bunny from "./bunny";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -23,7 +23,7 @@ import mime from "mime";
 import axios from "axios";
 import fastFolderSize from "fast-folder-size";
 import crypto from "crypto";
-import queryString from 'querystring';
+import queryString from "querystring";
 
 const port = process.env.PORT || 3000;
 const signUrls: boolean = false;
@@ -212,33 +212,33 @@ app.post("/api/users/register", async (req, res) => {
       error: "Unknown error, please try again.",
     });
 
-    const fileData = Buffer.from(
-      JSON.stringify({
-        Version: "16.0.1",
-        Name: `liba sharex - ${username}`,
-        DestinationType: "ImageUploader, FileUploader",
-        RequestMethod: "POST",
-        RequestURL: `https://${domain}/api/users/upload`,
-        Body: "MultipartFormData",
-        Arguments: {
-          username: `${username}`,
-          password: `${password}`,
-        },
-        FileFormName: "file",
-        URL: "https://{json:host}{json:path}",
-        ThumbnailURL: "https://{json:host}/uploads/og/{json:file_name}",
-        DeletionURL: "https://{json:host}/api/delete?token={json:delete_token}",
-      }),
-    ).toString("base64");
-  
-    res.writeHead(200, {
-      "Content-Disposition": `attachment; filename="${username}.sxcu"`,
-      "Content-Type": "text/plain",
-    });
-  
-    const download = Buffer.from(fileData, "base64");
-    res.end(download);
+  const fileData = Buffer.from(
+    JSON.stringify({
+      Version: "16.0.1",
+      Name: `liba sharex - ${username}`,
+      DestinationType: "ImageUploader, FileUploader",
+      RequestMethod: "POST",
+      RequestURL: `https://${domain}/api/users/upload`,
+      Body: "MultipartFormData",
+      Arguments: {
+        username: `${username}`,
+        password: `${password}`,
+      },
+      FileFormName: "file",
+      URL: "https://{json:host}{json:path}",
+      ThumbnailURL: "https://{json:host}/uploads/og/{json:file_name}",
+      DeletionURL: "https://{json:host}/api/delete?token={json:delete_token}",
+    }),
+  ).toString("base64");
+
+  res.writeHead(200, {
+    "Content-Disposition": `attachment; filename="${username}.sxcu"`,
+    "Content-Type": "text/plain",
   });
+
+  const download = Buffer.from(fileData, "base64");
+  res.end(download);
+});
 
 app.get("/api/discord-profile-picture", async (req, res) => {
   const { id } = req.query;
@@ -322,74 +322,47 @@ app.get("/:img", async (req, res) => {
       req.headers["user-agent"] &&
       botUserAgents.includes(req.headers["user-agent"])
     ) {
-      return res.setHeader("Cache-Control", "max-age=3600, must-revalidate").send(`
+      return res.setHeader("Cache-Control", "max-age=3600, must-revalidate")
+        .send(`
             <!doctype html>
             <html>
                 <head>
                     <meta property="og:author" content="${userData["embed"]["title"]}">
                     <meta property="og:title" content="‎‎‎‎‎‎‎‎">
                     <meta name="theme-color" content="${userData["embed"]["color"]}">
-                    <meta property="og:image" content="${uploadData['url']}">
+                    <meta property="og:image" content="${uploadData["url"]}">
                     <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}" />
                     <meta name="twitter:card" content="summary_large_image">
-                    <meta name="twitter:image" content="${uploadData['url']}">
+                    <meta name="twitter:image" content="${uploadData["url"]}">
                     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-refresh">
                     <meta http-equiv="Pragma" content="no-cache">
                     <meta http-equiv="Expires" content="0">
-                    <meta http-equiv="refresh" content="0; url=${uploadData['url']}">
+                    <meta http-equiv="refresh" content="0; url=${uploadData["url"]}">
                 </head>
             </html>
             `);
     }
 
-    await res.setHeader("Content-Security-Policy", 
-      "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
-      "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; " +
-      `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
-      "font-src 'self' https://fonts.gstatic.com https://unpkg.com;"
-    ).render("imageViewer", {
-      coverImg: uploadData['url'],
-      author: userData["displayName"] || userData["username"],
-      authorImg: userData["profilePicture"]
-        ? `${signUrls?signUrl(bunny.settings.cdn_url+"avatars/"+userData["profilePicture"], process.env.BUNNY_TAUTH_KEY||""):bunny.settings.cdn_url+"avatars/"+userData["profilePicture"]}`
-        : `https://${req.headers.host}/assets/img/placeholder.png`,
-      fileName: req.params.img,
-      verified: (await userData["verified"]) ? `block` : `none`,
-    });
-    
+    await res
+      .setHeader(
+        "Content-Security-Policy",
+        "default-src 'self'; " +
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
+          "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com https://sx.liba.lol; " +
+          `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
+          "font-src 'self' https://fonts.gstatic.com https://unpkg.com;",
+      )
+      .render("imageViewer", {
+        coverImg: uploadData["url"],
+        author: userData["displayName"] || userData["username"],
+        authorImg: userData["profilePicture"]
+          ? `${bunny.settings.cdn_url + "avatars/" + userData["profilePicture"]}`
+          : `https://${req.headers.host}/assets/img/placeholder.png`,
+        fileName: req.params.img,
+        verified: (await userData["verified"]) ? `block` : `none`,
+      });
   }
 });
-
-function signUrl(url: string, securityKey: string, expirationTime: number = 3600, userIp: string = "", isDirectory: boolean = false) {
-	let parameterData = "", parameterDataUrl = "", signaturePath = "", hashableBase = "", token = "";
-	const expires = Math.round(Date.now() / 1000) + expirationTime;
-	const parsedUrl = new URL(url);
-	const parameters = (new URL(url)).searchParams;
-	signaturePath = decodeURIComponent(parsedUrl.pathname);
-	parameters.sort();
-	if (Array.from(parameters).length > 0) {
-		parameters.forEach(function(value, key) {
-			if (value == "") {
-				return;
-			}
-			if (parameterData.length > 0) {
-				parameterData += "&";
-			}
-			parameterData += key + "=" + value;
-			parameterDataUrl += "&" + key + "=" + queryString.escape(value);
-			
-		});
-	}
-	hashableBase = securityKey + signaturePath + expires + ((userIp != "") ? userIp : "") + parameterData;
-	token = Buffer.from(crypto.createHash("sha256").update(hashableBase).digest()).toString("base64");
-	token = token.replace(/\n/g, "").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-	if (isDirectory) {
-		return parsedUrl.protocol+ "//" + parsedUrl.host + "/bcdn_token=" + token + parameterDataUrl + "&expires=" + expires + parsedUrl.pathname;
-	} else {
-		return parsedUrl.protocol + "//" + parsedUrl.host + parsedUrl.pathname + "?token=" + token + parameterDataUrl + "&expires=" + expires;
-	}
-}
 
 app.get("/api/delete", async (req, res) => {
   if (!req.query.token) return res.status(401).end();

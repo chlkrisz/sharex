@@ -65,19 +65,18 @@ h1 {
 }
 
 .cover-image {
-  position: relative; 
+  position: relative;
   overflow: hidden;
 }
 
 .cover-image img {
-  width: 100%; 
-  height: auto; 
-  display: block; 
+  width: 100%;
+  height: auto;
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
 }
-
 
 .picture {
   display: flex;

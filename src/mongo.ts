@@ -123,14 +123,14 @@ export async function getUsername(filename: string): Promise<string> {
 }
 */
 export async function getUserDataByUpload(filename: string): Promise<{
-  username: string,
-  profilePicture: string,
-  displayName: string,
-  verified: boolean,
+  username: string;
+  profilePicture: string;
+  displayName: string;
+  verified: boolean;
   embed: {
-    color: string,
-    title: string,
-  },
+    color: string;
+    title: string;
+  };
 }> {
   const Uploads = mongoose.model("uploads", uploadSchema);
   const Users = mongoose.model("users", userSchema);
@@ -210,15 +210,15 @@ export async function getUploadData(fileName: string): Promise<UploadData> {
   const upload = await Uploads.findOne({ filename: fileName });
   if (!upload || !upload.filename)
     return {
-      'filename': "unknown",
-      'path': '/395692119_1365213177412972_2538873250612002343_n.jpg',
-      'url': "https://cdn.liba.lol/395692119_1365213177412972_2538873250612002343_n.jpg",
+      filename: "unknown",
+      path: "/395692119_1365213177412972_2538873250612002343_n.jpg",
+      url: "https://cdn.liba.lol/395692119_1365213177412972_2538873250612002343_n.jpg",
     };
 
   return {
-    'filename': upload.filename,
-    'path': `${upload.file_url!.split(bunny.settings.cdn_url!)[1]}`,
-    'url': `${upload.file_url}`
+    filename: upload.filename,
+    path: `${upload.file_url!.split(bunny.settings.cdn_url!)[1]}`,
+    url: `${upload.file_url}`,
   };
 }
 
