@@ -22,15 +22,11 @@ router.get("/oembed", async (req, res) => {
     }
   
     return res.json({
-      type: "rich",
+      type: "photo",
       version: "1.0",
-      provider_name: req.query.author,
-      provider_url: "https://" + req.headers.host,
-      author: req.query.author,
-      title: "",
-      url: "https://" + req.headers.host + "/uploads/" + req.query.file,
-      thumbnail_url:
-        "https://" + req.headers.host + "/uploads/og/" + req.query.file,
+      author_name: req.query.author,
+      author_url:  "https://" + req.headers.host,
+      url: "https://" + req.headers.host + "/uploads/" + req.query.file
     });
 });
 

@@ -61,8 +61,6 @@ router.get("/:img", async (req, res) => {
         <!doctype html>
         <html>
           <head>
-            <meta property="og:author" content="${userData["embed"]["title"]}">
-            <meta property="og:title" content="‌">
             <meta name="theme-color" content="${userData["embed"]["color"]}">
             <meta property="og:image" content="${uploadData["url"]}">
             <link type="application/json+oembed" href="https://${req.headers.host}/api/oembed?author=${userData["embed"]["title"]}&file=${req.params.img}&t=${~~Date.now()/1000}" />
