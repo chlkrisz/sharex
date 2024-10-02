@@ -7,7 +7,8 @@ import bcrypt from "bcrypt";
 const saltRounds: number = 10;
 import path from "path";
 import * as fs from "fs";
-import * as bunny from "../utils/bunny";
+//import * as bunny from "../utils/bunny";
+import * as gcloud from "../utils/gcloud";
 
 const mongoUrl: string = process.env.MONGO_URL!;
 mongoose.connect(mongoUrl);
@@ -217,7 +218,7 @@ export async function getUploadData(fileName: string): Promise<UploadData> {
 
   return {
     filename: upload.filename,
-    path: `${upload.file_url!.split(bunny.settings.cdn_url!)[1]}`,
+    path: `${upload.file_url!.split(gcloud.settings.CDN_URL)[1]}`,
     url: `${upload.file_url}`,
   };
 }
@@ -254,10 +255,12 @@ export async function deleteUploadWithToken(token: string): Promise<boolean> {
     return false;
   }
 
-  const filePath = path.join(__dirname, "/../uploads/", upload.filename);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
+  //const filePath = path.join(__dirname, "/../uploads/", upload.filename);
+  //if (fs.existsSync(filePath)) {
+  //  fs.unlinkSync(filePath);
+  //}
+
+  await gcloud.deleteFile(upload.filename);
 
   await Uploads.deleteOne({ filename: upload.filename, delete_token: token });
 

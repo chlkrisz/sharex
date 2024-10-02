@@ -1,7 +1,8 @@
 import { Router } from "express";
 import path from "path";
 import * as mongo from "../utils/mongo";
-import * as bunny from "../utils/bunny";
+//import * as bunny from "../utils/bunny";
+import * as gcloud from '../utils/gcloud';
 
 const router = Router();
 
@@ -81,14 +82,14 @@ router.get("/:img", async (req, res) => {
       "default-src 'self'; " +
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; " +
         "style-src 'self' 'unsafe-inline' *; " +
-        `img-src 'self' ${bunny.settings.cdn_url} data:; ` +
+        `img-src 'self' ${gcloud.settings.CDN_URL} data:; ` +
         "font-src 'self' https://fonts.gstatic.com https://unpkg.com;",
     )
     .render("imageViewer", {
       coverImg: uploadData["url"],
       author: userData["displayName"] || userData["username"],
       authorImg: userData["profilePicture"]
-        ? `${bunny.settings.cdn_url + "avatars/" + userData["profilePicture"]}`
+        ? `${gcloud.settings.CDN_URL + "avatars/" + userData["profilePicture"]}`
         : `https://${req.headers.host}/assets/img/placeholder.png`,
       fileName: req.params.img,
       verified: (await userData["verified"]) ? `block` : `none`,

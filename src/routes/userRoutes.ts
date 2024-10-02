@@ -88,16 +88,16 @@ router.post("/users/register", async (req, res) => {
   const fileData = Buffer.from(
     JSON.stringify({
       Version: "16.0.1",
-      Name: `liba sharex - ${username}`,
+      Name: `Snaply.pics - ${username}`,
       DestinationType: "ImageUploader, FileUploader",
       RequestMethod: "POST",
-      RequestURL: `https://${domain}/api/users/upload`,
+      RequestURL: `https://${domain}/users/upload`,
       Body: "MultipartFormData",
       Arguments: { username: `${username}`, password: `${password}` },
       FileFormName: "file",
       URL: "https://{json:host}{json:path}",
       ThumbnailURL: "https://{json:host}/uploads/og/{json:file_name}",
-      DeletionURL: "https://{json:host}/api/delete?token={json:delete_token}",
+      DeletionURL: "https://{json:host}/delete?token={json:delete_token}",
     }),
   ).toString("base64");
 

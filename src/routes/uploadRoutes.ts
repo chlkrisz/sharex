@@ -4,7 +4,8 @@ import {
   addUpload,
   deleteUploadWithToken,
 } from "../utils/mongo";
-import * as bunny from "../utils/bunny";
+//import * as bunny from "../utils/bunny";
+import * as gcloud from "../utils/gcloud";
 
 const router = Router();
 
@@ -27,8 +28,8 @@ router.post("/users/upload", async (req, res) => {
     /(?:\.([^.]+))?$/.exec(file.name)![1];
   const deleteToken = (Math.random() + 1).toString(36).substring(2, 52);
 
-  const filePath = await bunny.uploadFileStream(file);
-  const fileLink = bunny.settings.cdn_url + filePath;
+  const uploadedFile = await gcloud.uploadFile(file, fileName);
+  const fileLink = gcloud.settings.CDN_URL + gcloud.settings.PATH + fileName;
   addUpload(req.body.username, fileName, fileLink, deleteToken);
 
   res.setHeader("Content-Type", "application/json").send(
@@ -44,7 +45,7 @@ router.post("/users/upload", async (req, res) => {
   );
 });
 
-router.get("/api/delete", async (req, res) => {
+router.get("/users/delete-upload", async (req, res) => {
   if (!req.query.token) return res.status(401).end();
 
   const token = req.query.token as string;
