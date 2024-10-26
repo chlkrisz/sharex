@@ -91,7 +91,7 @@ router.post("/users/register", async (req, res) => {
       Name: `Snaply.pics - ${username}`,
       DestinationType: "ImageUploader, FileUploader",
       RequestMethod: "POST",
-      RequestURL: `https://${domain}/users/upload`,
+      RequestURL: `https://${domain}/api/users/upload`,
       Body: "MultipartFormData",
       Arguments: { username: `${username}`, password: `${password}` },
       FileFormName: "file",
