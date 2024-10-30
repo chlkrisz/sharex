@@ -6,7 +6,7 @@ import {
 } from "../utils/mongo";
 //import * as bunny from "../utils/bunny";
 import * as gcloud from "../utils/gcloud";
-import * as fileType from "file-type";
+import fileType from "file-type";
 
 const router = Router();
 
