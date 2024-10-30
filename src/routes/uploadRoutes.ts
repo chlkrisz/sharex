@@ -6,6 +6,7 @@ import {
 } from "../utils/mongo";
 //import * as bunny from "../utils/bunny";
 import * as gcloud from "../utils/gcloud";
+import * as fileType from "file-type";
 
 const router = Router();
 
@@ -21,6 +22,18 @@ router.post("/users/upload", async (req, res) => {
 
   if (Array.isArray(file))
     return res.status(400).send("Only one file at a time is allowed.");
+
+  const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "video/mp4", "audio/mpeg"];
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return res.status(400).send("Only media files are allowed.");
+  }
+
+  const buffer = file.data;
+  const detectedFileType = await fileType.fromBuffer(buffer);
+
+  if (!detectedFileType || !allowedMimeTypes.includes(detectedFileType.mime)) {
+    return res.status(400).send("File type mismatch.");
+  }
 
   const fileName =
     (Math.random() + 1).toString(36).substring(2, 12) +
