@@ -6,7 +6,7 @@ import {
 } from "../utils/mongo";
 //import * as bunny from "../utils/bunny";
 import * as gcloud from "../utils/gcloud";
-import { fileTypeFromBuffer } from "file-type";
+import fileType from 'file-type';
 
 const router = Router();
 
@@ -29,7 +29,7 @@ router.post("/users/upload", async (req, res) => {
   }
 
   const buffer = file.data;
-  const detectedFileType = await fileTypeFromBuffer(buffer);
+  const detectedFileType = await fileType.fromBuffer(buffer);
 
   if (!detectedFileType || !allowedMimeTypes.includes(detectedFileType.mime)) {
     return res.status(400).send("File type mismatch.");
